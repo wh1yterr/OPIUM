@@ -6,18 +6,31 @@ Render пытается собрать фронтенд из корня прое
 
 ## Настройки в Render Dashboard:
 
-1. **Root Directory**: `backend`
-   - В настройках сервиса укажите Root Directory как `backend`
+**ВАЖНО:** Если `render.yaml` не применяется автоматически, настройте вручную:
 
-2. **Build Command**: оставьте пустым или `npm install`
-   - Render автоматически установит зависимости из `backend/package.json`
+1. **Root Directory**: `backend` ⚠️ ОБЯЗАТЕЛЬНО!
+   - В настройках сервиса (Settings → Build & Deploy) укажите Root Directory как `backend`
+   - Без этого Render будет пытаться собрать фронтенд из корня
+
+2. **Build Command**: `npm install`
+   - Render автоматически перейдет в Root Directory (backend) и установит зависимости
 
 3. **Start Command**: `npm start`
    - Это запустит `node server.js` из папки backend
 
+### Проверка:
+После настройки Root Directory, логи должны показывать:
+- `==> Running 'npm install'` (в папке backend)
+- `==> Running 'npm start'` (в папке backend)
+- НЕ должно быть `react-scripts` или попыток собрать фронтенд
+
 ## Альтернативный способ (через render.yaml):
 
 Если используете файл `render.yaml`, Render автоматически применит настройки из него.
+
+**Важно:** 
+- `render.yaml` должен быть в корне репозитория ИЛИ в папке `backend` (если Root Directory = `backend`)
+- Создан файл `backend/render.yaml` для случая, когда Root Directory установлен как `backend`
 
 ## Переменные окружения на Render:
 
