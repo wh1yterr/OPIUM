@@ -19,6 +19,9 @@ const Admin = () => {
   });
   const [tempQuantities, setTempQuantities] = useState({}); // Временное состояние для хранения значений
   const [editingProduct, setEditingProduct] = useState(null); // Состояние для редактируемого продукта
+  const [sizes, setSizes] = useState([]);
+  const [selectedProductForSizes, setSelectedProductForSizes] = useState(null);
+  const [newSize, setNewSize] = useState({ size_name: 'S', quantity: 0 });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -44,6 +47,23 @@ const Admin = () => {
     };
     fetchData();
   }, []);
+
+  // Загрузка размеров для выбранного продукта
+  const fetchSizes = async (productId) => {
+    try {
+      if (!productId) return setSizes([]);
+      const resp = await api.get(`/sizes/product/${productId}`);
+      setSizes(resp.data);
+    } catch (err) {
+      toast.error('Ошибка загрузки размеров');
+      console.error(err.response || err);
+    }
+  };
+
+  useEffect(() => {
+    if (selectedProductForSizes) fetchSizes(selectedProductForSizes);
+    else setSizes([]);
+  }, [selectedProductForSizes]);
 
   const updateOrderStatus = async (orderId, status) => {
     try {
@@ -141,6 +161,116 @@ return (
         onSelect={(k) => setActiveTab(k)}
         className="admin-tabs mb-2"
       >
+        <Tab eventKey="sizes" title="Управление размерами">
+          <Row className="mb-3">
+            <Col xs={12} sm={6}>
+              <Form.Group>
+                <Form.Label>Выберите продукт</Form.Label>
+                <Form.Select value={selectedProductForSizes || ''} onChange={(e) => setSelectedProductForSizes(e.target.value || null)}>
+                  <option value="">-- Выберите продукт --</option>
+                  {products.map(p => (
+                    <option key={p.id} value={p.id}>{p.name} (ID: {p.id})</option>
+                  ))}
+                </Form.Select>
+              </Form.Group>
+            </Col>
+          </Row>
+
+          {selectedProductForSizes ? (
+            <>
+              <Table striped bordered hover className="admin-table">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Размер</th>
+                    <th>Остаток</th>
+                    <th>Действия</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {sizes.map(size => (
+                    <tr key={size.id}>
+                      <td>{size.id}</td>
+                      <td>{size.size_name}</td>
+                      <td>{size.quantity}</td>
+                      <td>
+                        <Form.Control
+                          type="number"
+                          min="0"
+                          defaultValue={size.quantity}
+                          onBlur={async (e) => {
+                            const q = parseInt(e.target.value) || 0;
+                            try {
+                              await api.put(`/sizes/${size.id}`, { quantity: q });
+                              setSizes(sizes.map(s => s.id === size.id ? { ...s, quantity: q } : s));
+                              toast.success('Количество размера обновлено');
+                            } catch (err) {
+                              toast.error('Ошибка обновления размера');
+                              console.error(err.response || err);
+                            }
+                          }}
+                          className="admin-input"
+                        />
+                        <Button variant="danger" size="sm" className="mt-2" onClick={async () => {
+                          if (!confirm('Удалить размер?')) return;
+                          try {
+                            await api.delete(`/sizes/${size.id}`);
+                            setSizes(sizes.filter(s => s.id !== size.id));
+                            toast.success('Размер удалён');
+                          } catch (err) {
+                            toast.error('Ошибка удаления размера');
+                            console.error(err.response || err);
+                          }
+                        }}>Удалить</Button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
+
+              <Form className="admin-form" onSubmit={async (e) => {
+                e.preventDefault();
+                try {
+                  const payload = { product_id: selectedProductForSizes, size_name: newSize.size_name, quantity: parseInt(newSize.quantity) || 0 };
+                  const resp = await api.post('/sizes', payload);
+                  setSizes([...sizes, resp.data]);
+                  setNewSize({ size_name: 'S', quantity: 0 });
+                  toast.success('Размер добавлен');
+                } catch (err) {
+                  toast.error(err.response?.data?.message || 'Ошибка добавления размера');
+                  console.error(err.response || err);
+                }
+              }}>
+                <Row>
+                  <Col xs={12} sm={3} className="mb-2">
+                    <Form.Group>
+                      <Form.Label>Размер</Form.Label>
+                      <Form.Select value={newSize.size_name} onChange={(e) => setNewSize({ ...newSize, size_name: e.target.value })}>
+                        <option>XS</option>
+                        <option>S</option>
+                        <option>M</option>
+                        <option>L</option>
+                        <option>XL</option>
+                        <option>XXL</option>
+                      </Form.Select>
+                    </Form.Group>
+                  </Col>
+                  <Col xs={12} sm={3} className="mb-2">
+                    <Form.Group>
+                      <Form.Label>Остаток</Form.Label>
+                      <Form.Control type="number" min="0" value={newSize.quantity} onChange={(e) => setNewSize({ ...newSize, quantity: e.target.value })} />
+                    </Form.Group>
+                  </Col>
+                  <Col xs={12} sm={3} className="mb-2 d-flex align-items-end">
+                    <Button type="submit" className="admin-button">Добавить размер</Button>
+                  </Col>
+                </Row>
+              </Form>
+            </>
+          ) : (
+            <p>Выберите продукт, чтобы управлять его размерами.</p>
+          )}
+        </Tab>
         <Tab eventKey="orders" title="Управление заказами">
           {orders.length === 0 ? (
             <p>Нет заказов для отображения</p>
