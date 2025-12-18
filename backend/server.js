@@ -9,12 +9,8 @@ dotenv.config();
 const app = express();
 
 // Настройка CORS
-const allowedOrigins = process.env.FRONTEND_URL 
-  ? process.env.FRONTEND_URL.split(',').map(url => url.trim())
-  : ['http://localhost:3000'];
-
 const corsOptions = {
-  origin: allowedOrigins,
+  origin: ['https://opium-blond.vercel.app/', 'http://localhost:3000'],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
