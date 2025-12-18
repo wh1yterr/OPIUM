@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Container, Tabs, Tab, Table, Form, Pagination, Button, Row, Col } from "react-bootstrap";
 import api from '../services/axiosConfig';
-import * as jwtDecodeLib from 'jwt-decode';
-const jwtDecode = jwtDecodeLib && jwtDecodeLib.default ? jwtDecodeLib.default : jwtDecodeLib;
 import { toast } from 'react-hot-toast';
 import './Admin.css'
 
@@ -30,7 +28,20 @@ const Admin = () => {
         const token = localStorage.getItem('token');
         if (!token) throw new Error('Требуется авторизация');
 
-        const decodedToken = jwtDecode(token);
+        let decodedToken;
+        try {
+          // eslint-disable-next-line global-require
+          const jwtDecode = require('jwt-decode');
+          decodedToken = jwtDecode(token);
+        } catch (e) {
+          // fallback: decode JWT payload without verification
+          try {
+            decodedToken = JSON.parse(atob(token.split('.')[1]));
+          } catch (e2) {
+            console.error('JWT decode failed', e, e2);
+            throw e;
+          }
+        }
         if (decodedToken.role !== 'admin') {
           toast.error('Доступ только для администраторов');
           return;
