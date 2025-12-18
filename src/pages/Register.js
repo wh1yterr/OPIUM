@@ -3,6 +3,7 @@ import { Form, Button, Container, Alert } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-hot-toast";
+import "./Login.css";
 
 const Register = ({ setIsAuthenticated }) => {
   const [formData, setFormData] = useState({
@@ -83,66 +84,70 @@ const Register = ({ setIsAuthenticated }) => {
   };
 
   return (
-    <Container className="mt-5" style={{ maxWidth: "600px" }}>
-      <h2 className="text-center mb-4">Регистрация</h2>
-      {error && <Alert variant="danger">{error}</Alert>}
-      <Form onSubmit={handleSubmit}>
-        <Form.Group className="mb-3">
-          <Form.Label>Email</Form.Label>
-          <Form.Control
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            required
-          />
-        </Form.Group>
+    <div className="auth-container">
+      <div className="auth-form">
+        <h2>Регистрация</h2>
+        {error && <Alert variant="danger">{error}</Alert>}
+        <Form onSubmit={handleSubmit}>
+          <Form.Group>
+            <Form.Label>Email</Form.Label>
+            <Form.Control
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              placeholder="Введите email"
+              required
+            />
+          </Form.Group>
 
-        <Form.Group className="mb-3">
-          <Form.Label>Пароль</Form.Label>
-          <Form.Control
-            type="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            required
-            minLength={6}
-          />
-        </Form.Group>
+          <Form.Group>
+            <Form.Label>Пароль</Form.Label>
+            <Form.Control
+              type="password"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              placeholder="Минимум 6 символов"
+              required
+              minLength={6}
+            />
+          </Form.Group>
 
-        <Form.Group className="mb-3">
-          <Form.Label>Полное имя</Form.Label>
-          <Form.Control
-            type="text"
-            name="fullName"
-            value={formData.fullName}
-            onChange={handleChange}
-            required
-            placeholder="Имя Фамилия"
-          />
-        </Form.Group>
+          <Form.Group>
+            <Form.Label>Полное имя</Form.Label>
+            <Form.Control
+              type="text"
+              name="fullName"
+              value={formData.fullName}
+              onChange={handleChange}
+              placeholder="Имя Фамилия"
+              required
+            />
+          </Form.Group>
 
-        <Form.Group className="mb-3">
-          <Form.Label>Телефон</Form.Label>
-          <Form.Control
-            type="tel"
-            name="phone"
-            value={formData.phone}
-            onChange={handleChange}
-            required
-            placeholder="+7 (999) 999-99-99"
-          />
-        </Form.Group>
+          <Form.Group>
+            <Form.Label>Телефон</Form.Label>
+            <Form.Control
+              type="tel"
+              name="phone"
+              value={formData.phone}
+              onChange={handleChange}
+              placeholder="+7 (999) 999-99-99"
+              required
+            />
+          </Form.Group>
 
-        <Button variant="primary" type="submit" className="w-100 mb-3">
-          Зарегистрироваться
-        </Button>
+          <Button variant="primary" type="submit">
+            Зарегистрироваться
+          </Button>
 
-        <div className="text-center">
-          <Link to="/login">Уже есть аккаунт? Войдите</Link>
-        </div>
-      </Form>
-    </Container>
+          <p>
+            Уже есть аккаунт? <Link to="/login">Войдите</Link>
+          </p>
+        </Form>
+      </div>
+    </div>
   );
 };
 

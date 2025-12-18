@@ -28,32 +28,31 @@ const Header = ({ isAuthenticated, handleLogout }) => {
   };
 
   return (
-    <Navbar collapseOnSelect expand="md" bg="dark" variant="dark">
+    <Navbar collapseOnSelect expand="md" style={{ backgroundColor: '#000000', borderBottom: '1px solid #1a1a1a' }} variant="dark">
       <Container>
-        <Navbar.Brand as={Link} to="/" style={{ fontWeight: 'bold', fontSize: '1.5rem' }}>
+        <Navbar.Brand as={Link} to="/" style={{ fontWeight: '900', fontSize: '1.8rem', letterSpacing: '3px', color: '#ffffff' }}>
           OPIUM
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
         <Navbar.Collapse id="responsive-navbar-nav">
           <Nav className="me-auto">
-            <Nav.Link as={Link} to="/">Главная</Nav.Link>
-            {!isAuthenticated && <Nav.Link as={Link} to="/register">Регистрация</Nav.Link>}
-            <Nav.Link as={Link} to="/products">Каталог</Nav.Link>
-            {isAuthenticated && <Nav.Link as={Link} to="/profile">Профиль</Nav.Link>}
-            {isAuthenticated && <Nav.Link as={Link} to="/cart">Корзина</Nav.Link>}
-            <Nav.Link as={Link} to="/terms">Условия</Nav.Link>
+            <Nav.Link as={Link} to="/" style={{ color: '#ffffff', fontWeight: '600', letterSpacing: '1px', textTransform: 'uppercase', fontSize: '0.85rem' }}>Главная</Nav.Link>
+            {!isAuthenticated && <Nav.Link as={Link} to="/register" style={{ color: '#ffffff', fontWeight: '600', letterSpacing: '1px', textTransform: 'uppercase', fontSize: '0.85rem' }}>Регистрация</Nav.Link>}
+            <Nav.Link as={Link} to="/products" style={{ color: '#ffffff', fontWeight: '600', letterSpacing: '1px', textTransform: 'uppercase', fontSize: '0.85rem' }}>Каталог</Nav.Link>
+            {isAuthenticated && <Nav.Link as={Link} to="/profile" style={{ color: '#ffffff', fontWeight: '600', letterSpacing: '1px', textTransform: 'uppercase', fontSize: '0.85rem' }}>Профиль</Nav.Link>}
+            {isAuthenticated && <Nav.Link as={Link} to="/cart" style={{ color: '#ffffff', fontWeight: '600', letterSpacing: '1px', textTransform: 'uppercase', fontSize: '0.85rem' }}>Корзина</Nav.Link>}
             {/* Вкладка "Админ" только для администраторов */}
             {isAuthenticated && userRole === 'admin' && (
-              <Nav.Link as={Link} to="/admin">Админ</Nav.Link>
+              <Nav.Link as={Link} to="/admin" style={{ color: '#dc143c', fontWeight: '700', letterSpacing: '1px', textTransform: 'uppercase', fontSize: '0.85rem' }}>Админ</Nav.Link>
             )}
           </Nav>
           {isAuthenticated ? (
-            <Button variant="warning" onClick={onLogout}>
+            <Button onClick={onLogout} style={{ backgroundColor: '#dc143c', border: 'none', fontWeight: '700', letterSpacing: '1px', textTransform: 'uppercase', padding: '8px 20px' }}>
               Выйти
             </Button>
           ) : (
             <Nav>
-              <Nav.Link as={Link} to="/login">Войти</Nav.Link>
+              <Nav.Link as={Link} to="/login" style={{ color: '#ffffff', fontWeight: '600', letterSpacing: '1px', textTransform: 'uppercase', fontSize: '0.85rem' }}>Войти</Nav.Link>
             </Nav>
           )}
         </Navbar.Collapse>

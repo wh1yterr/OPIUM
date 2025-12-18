@@ -10,7 +10,6 @@ import Register from "./pages/Register";
 import Products from "./pages/Products";
 import Cart from "./pages/Cart";
 import Profile from "./pages/Profile";
-import TermsPage from "./pages/TermsPage";
 import Admin from "./pages/Admin";
 import { jwtDecode } from "jwt-decode";
 import { Toaster, ToastContainer } from "react-hot-toast";
@@ -190,10 +189,6 @@ function App() {
                   <Navigate to="/login" replace />
                 )
               }
-            />
-            <Route
-              path="/terms"
-              element={<TermsPage />}
             />
             <Route
               path="/admin"

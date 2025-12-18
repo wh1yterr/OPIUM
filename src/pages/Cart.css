@@ -1,0 +1,182 @@
+/* Cart Page - OPIUM/Carti Style */
+.cart-container {
+  padding: 40px 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  background-color: #000000;
+  min-height: 100vh;
+}
+
+.cart-container h2 {
+  font-size: 2.5rem;
+  color: #ffffff;
+  text-align: center;
+  margin-bottom: 40px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+}
+
+/* Таблица корзины */
+.cart-container .table {
+  background-color: #0a0a0a !important;
+  border: 1px solid #1a1a1a !important;
+}
+
+.cart-container .table thead th {
+  background-color: #1a1a1a !important;
+  border-bottom: 2px solid #333333 !important;
+  color: #ffffff !important;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  letter-spacing: 1px;
+  padding: 15px;
+  font-weight: 700;
+}
+
+.cart-container .table tbody td {
+  border-color: #1a1a1a !important;
+  padding: 15px;
+  color: #cccccc;
+  vertical-align: middle;
+}
+
+.cart-container .table tbody tr:hover {
+  background-color: #0f0f0f;
+}
+
+/* Изображения товаров */
+.cart-container .table img {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border: 1px solid #1a1a1a;
+}
+
+/* Инпуты количества */
+.cart-container .form-control {
+  background-color: #1a1a1a !important;
+  border: 1px solid #333333 !important;
+  color: #ffffff !important;
+  border-radius: 0;
+  padding: 8px;
+  width: 80px;
+  text-align: center;
+  font-weight: 700;
+}
+
+.cart-container .form-control:focus {
+  border-color: #dc143c !important;
+  box-shadow: 0 0 0 0.2rem rgba(220, 20, 60, 0.25) !important;
+}
+
+/* Кнопки */
+.cart-container .btn-danger {
+  background-color: #dc143c !important;
+  border: none !important;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border-radius: 0;
+  padding: 8px 16px;
+  font-size: 0.85rem;
+}
+
+.cart-container .btn-danger:hover {
+  background-color: #b00020 !important;
+}
+
+.cart-container .btn-success {
+  background-color: #28a745 !important;
+  border: none !important;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border-radius: 0;
+  padding: 12px 30px;
+  font-size: 1rem;
+}
+
+.cart-container .btn-success:hover {
+  background-color: #218838 !important;
+}
+
+/* Итоговая сумма */
+.cart-container h3 {
+  font-size: 1.8rem;
+  color: #ffffff;
+  text-align: right;
+  margin-top: 30px;
+  margin-bottom: 20px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.cart-container .text-end {
+  text-align: right;
+}
+
+/* Пустая корзина */
+.cart-container p {
+  color: #888888;
+  text-align: center;
+  font-size: 1.2rem;
+  margin-top: 50px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+  .cart-container {
+    padding: 20px 10px;
+  }
+
+  .cart-container h2 {
+    font-size: 2rem;
+    margin-bottom: 30px;
+  }
+
+  .cart-container .table {
+    font-size: 0.85rem;
+  }
+
+  .cart-container .table thead th,
+  .cart-container .table tbody td {
+    padding: 10px;
+  }
+
+  .cart-container .table img {
+    width: 60px;
+    height: 60px;
+  }
+
+  .cart-container .form-control {
+    width: 60px;
+    padding: 6px;
+  }
+
+  .cart-container h3 {
+    font-size: 1.5rem;
+    text-align: center;
+  }
+
+  .cart-container .text-end {
+    text-align: center;
+  }
+}
+
+/* Анимация */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.cart-container {
+  animation: fadeIn 0.5s ease-in;
+}

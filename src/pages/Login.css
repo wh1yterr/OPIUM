@@ -1,0 +1,121 @@
+/* Login/Register Pages - OPIUM/Carti Style */
+.auth-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #000000;
+  padding: 40px 20px;
+}
+
+.auth-form {
+  max-width: 450px;
+  width: 100%;
+  background-color: #0a0a0a;
+  border: 1px solid #1a1a1a;
+  padding: 50px 40px;
+  animation: fadeIn 0.5s ease-in;
+}
+
+.auth-form h2 {
+  font-size: 2.5rem;
+  color: #ffffff;
+  text-align: center;
+  margin-bottom: 40px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+}
+
+.auth-form .form-label {
+  color: #ffffff;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+}
+
+.auth-form .form-control {
+  background-color: #1a1a1a !important;
+  border: 1px solid #333333 !important;
+  color: #ffffff !important;
+  padding: 12px;
+  border-radius: 0;
+  margin-bottom: 20px;
+}
+
+.auth-form .form-control:focus {
+  border-color: #dc143c !important;
+  box-shadow: 0 0 0 0.2rem rgba(220, 20, 60, 0.25) !important;
+}
+
+.auth-form .form-control::placeholder {
+  color: #666666 !important;
+}
+
+.auth-form .btn-primary {
+  width: 100%;
+  background-color: #dc143c !important;
+  border: none !important;
+  padding: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  border-radius: 0;
+  margin-top: 10px;
+  font-size: 1rem;
+}
+
+.auth-form .btn-primary:hover {
+  background-color: #b00020 !important;
+  transform: translateY(-2px);
+}
+
+.auth-form p {
+  color: #888888;
+  text-align: center;
+  margin-top: 25px;
+  font-size: 0.9rem;
+}
+
+.auth-form p a {
+  color: #dc143c;
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.auth-form p a:hover {
+  color: #b00020;
+  text-decoration: underline;
+}
+
+.auth-form .alert {
+  background-color: #2a0a0a !important;
+  border: 1px solid #dc143c !important;
+  color: #ffcccc !important;
+  border-radius: 0;
+  padding: 12px;
+  margin-bottom: 20px;
+}
+
+@media (max-width: 576px) {
+  .auth-form {
+    padding: 40px 30px;
+  }
+
+  .auth-form h2 {
+    font-size: 2rem;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

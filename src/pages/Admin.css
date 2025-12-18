@@ -1,96 +1,216 @@
-/* Admin.css */
+/* Admin Page - OPIUM/Carti Style */
 .admin-container {
-  max-width: 100%;
-  width: 100vw;
-  padding: 0 5px;
-  margin-top: 10px;
+  padding: 40px 20px;
+  max-width: 1600px;
+  margin: 0 auto;
+  background-color: #000000;
+  min-height: 100vh;
 }
 
 .admin-container h2 {
-  font-size: 1.5rem;
-  margin-bottom: 10px;
+  font-size: 2.5rem;
+  color: #ffffff;
   text-align: center;
+  margin-bottom: 40px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 3px;
 }
 
-.admin-tabs {
-  font-size: 0.9rem;
-}
-
+/* Табы */
 .admin-tabs .nav-link {
+  background-color: #0a0a0a;
+  border: 1px solid #1a1a1a;
+  border-radius: 0;
+  color: #888888;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
   font-size: 0.9rem;
+  padding: 12px 20px;
+  margin-right: 5px;
 }
 
+.admin-tabs .nav-link:hover {
+  background-color: #1a1a1a;
+  border-color: #333333;
+  color: #ffffff;
+}
+
+.admin-tabs .nav-link.active {
+  background-color: #dc143c !important;
+  border-color: #dc143c !important;
+  color: #ffffff !important;
+}
+
+/* Таблицы */
 .admin-table {
-  font-size: 0.9rem;
+  background-color: #0a0a0a !important;
+  border: 1px solid #1a1a1a !important;
 }
 
-.admin-table th,
-.admin-table td {
-  padding: 5px;
+.admin-table thead th {
+  background-color: #1a1a1a !important;
+  border-bottom: 2px solid #333333 !important;
+  color: #ffffff !important;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  letter-spacing: 1px;
+  padding: 15px;
+  font-weight: 700;
 }
 
+.admin-table tbody td {
+  border-color: #1a1a1a !important;
+  padding: 15px;
+  color: #cccccc;
+}
+
+.admin-table tbody tr:hover {
+  background-color: #0f0f0f;
+}
+
+/* Селекты и инпуты */
 .admin-select,
 .admin-input {
-  padding: 2px;
-  font-size: 0.8rem;
+  background-color: #1a1a1a !important;
+  border: 1px solid #333333 !important;
+  color: #ffffff !important;
+  border-radius: 0;
+  padding: 8px 12px;
 }
 
-.admin-pagination {
-  font-size: 0.9rem;
+.admin-select:focus,
+.admin-input:focus {
+  border-color: #dc143c !important;
+  box-shadow: 0 0 0 0.2rem rgba(220, 20, 60, 0.25) !important;
 }
 
-.admin-pagination .page-item {
-  padding: 2px 6px;
+.admin-select option {
+  background-color: #1a1a1a;
+  color: #ffffff;
 }
 
-.admin-form {
-  margin-top: 10px;
-}
-
-.admin-form .form-control {
-  font-size: 0.9rem;
-}
-
+/* Кнопки */
 .admin-button {
-  padding: 5px 10px;
-  font-size: 0.9rem;
+  background-color: #dc143c !important;
+  border: none !important;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border-radius: 0;
+  padding: 8px 20px;
 }
 
-/* Медиа-запросы для мобильных устройств (до 768px) */
+.admin-button:hover {
+  background-color: #b00020 !important;
+}
+
+.btn-danger {
+  background-color: #dc143c !important;
+  border: none !important;
+}
+
+.btn-danger:hover {
+  background-color: #b00020 !important;
+}
+
+/* Формы */
+.admin-form {
+  background-color: #0a0a0a;
+  border: 1px solid #1a1a1a;
+  padding: 30px;
+  margin-top: 20px;
+}
+
+.admin-form .form-label {
+  color: #ffffff;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  letter-spacing: 0.5px;
+}
+
+.admin-form .form-control,
+.admin-form .form-select {
+  background-color: #1a1a1a !important;
+  border: 1px solid #333333 !important;
+  color: #ffffff !important;
+  border-radius: 0;
+}
+
+.admin-form .form-control:focus,
+.admin-form .form-select:focus {
+  border-color: #dc143c !important;
+  box-shadow: 0 0 0 0.2rem rgba(220, 20, 60, 0.25) !important;
+}
+
+/* Пагинация */
+.admin-pagination .page-link {
+  background-color: #1a1a1a;
+  border: 1px solid #333333;
+  color: #ffffff;
+  border-radius: 0;
+  font-weight: 600;
+}
+
+.admin-pagination .page-link:hover {
+  background-color: #dc143c;
+  border-color: #dc143c;
+  color: #ffffff;
+}
+
+.admin-pagination .page-item.active .page-link {
+  background-color: #dc143c;
+  border-color: #dc143c;
+}
+
+.admin-pagination .page-item.disabled .page-link {
+  background-color: #0a0a0a;
+  border-color: #1a1a1a;
+  color: #444444;
+}
+
+/* Адаптивность */
 @media (max-width: 768px) {
   .admin-container {
-    padding: 0 2px;
+    padding: 20px 10px;
   }
 
   .admin-container h2 {
-    font-size: 1.2rem;
+    font-size: 2rem;
+    margin-bottom: 30px;
   }
 
-  .admin-tabs,
   .admin-tabs .nav-link {
     font-size: 0.8rem;
+    padding: 10px 15px;
   }
 
   .admin-table {
-    font-size: 0.7rem;
+    font-size: 0.85rem;
   }
 
-  .admin-select,
-  .admin-input {
-    font-size: 0.7rem;
-    padding: 1px;
+  .admin-table thead th,
+  .admin-table tbody td {
+    padding: 10px;
   }
 
-  .admin-pagination {
-    font-size: 0.7rem;
+  .admin-form {
+    padding: 20px;
   }
+}
 
-  .admin-form .form-control {
-    font-size: 0.8rem;
+/* Анимации */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
   }
+  to {
+    opacity: 1;
+  }
+}
 
-  .admin-button {
-    font-size: 0.8rem;
-    padding: 3px 8px;
-  }
+.admin-container {
+  animation: fadeIn 0.5s ease-in;
 }

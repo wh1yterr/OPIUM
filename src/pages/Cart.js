@@ -2,9 +2,12 @@ import React, { useState, useEffect } from "react";
 import { Container, Table, Button, Form } from "react-bootstrap";
 import axios from "axios";
 import { toast } from "react-hot-toast";
+import "./Cart.css";
 
 const Cart = () => {
   const [cartItems, setCartItems] = useState([]);
+  
+
 
   useEffect(() => {
     const fetchCartItems = async () => {
@@ -128,14 +131,14 @@ const Cart = () => {
   );
 
   return (
-    <Container className="mt-5" style={{ maxWidth: "900px" }}>
-      <h2 className="mb-4 text-center">Корзина</h2>
+    <Container className="cart-container">
+      <h2>Корзина</h2>
 
       {cartItems.length === 0 ? (
         <p>Корзина пуста</p>
       ) : (
         <>
-          <Table striped bordered hover>
+          <Table>
             <thead>
               <tr>
                 <th>Название</th>
@@ -150,7 +153,7 @@ const Cart = () => {
                   <td>{item.name}</td>
                   <td>{item.price}</td>
                   <td>
-                    <div className="d-flex align-items-center">
+                    <div className="d-flex align-items-center justify-content-center">
                       <Button
                         variant="secondary"
                         size="sm"
@@ -159,7 +162,7 @@ const Cart = () => {
                       >
                         -
                       </Button>
-                      <span className="mx-2">{item.quantity}</span>
+                      <span className="mx-3" style={{ fontWeight: '700', fontSize: '1.1rem' }}>{item.quantity}</span>
                       <Button
                         variant="secondary"
                         size="sm"
@@ -182,18 +185,18 @@ const Cart = () => {
               ))}
             </tbody>
           </Table>
-          <div className="text-end mb-3">
-            <h4>Итого: {calculateTotalPrice()} ₽</h4>
+          <h3>Итого: {calculateTotalPrice()} ₽</h3>
+          <div className="text-end">
+            <Button
+              variant="success"
+              onClick={placeOrder}
+              disabled={cartItems.length === 0 || !isOrderPossible}
+            >
+              Оформить заказ
+            </Button>
           </div>
-          <Button
-            variant="success"
-            onClick={placeOrder}
-            disabled={cartItems.length === 0 || !isOrderPossible}
-          >
-            Оформить заказ
-          </Button>
           {!isOrderPossible && (
-            <div className="text-danger mt-3">
+            <div style={{ color: '#dc143c', marginTop: '20px', textAlign: 'center', fontWeight: '600' }}>
               Нельзя оформить заказ: недостаточно товара в наличии.
             </div>
           )}

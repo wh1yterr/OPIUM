@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import api from "../services/axiosConfig";
 import { authService } from "../services/authService";
+import "./Login.css";
 
 const Login = ({ setIsAuthenticated }) => {
   const [email, setEmail] = useState("");
@@ -85,39 +86,43 @@ const Login = ({ setIsAuthenticated }) => {
   };
 
   return (
-    <Container className="mt-5" style={{ maxWidth: "400px" }}>
-      <h2 className="text-center mb-4">Вход</h2>
-      {error && <Alert variant="danger">{error}</Alert>}
-      <Form onSubmit={handleSubmit}>
-        <Form.Group className="mb-3">
-          <Form.Label>Email</Form.Label>
-          <Form.Control
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-        </Form.Group>
+    <div className="auth-container">
+      <div className="auth-form">
+        <h2>Вход</h2>
+        {error && <Alert variant="danger">{error}</Alert>}
+        <Form onSubmit={handleSubmit}>
+          <Form.Group>
+            <Form.Label>Email</Form.Label>
+            <Form.Control
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Введите email"
+              required
+            />
+          </Form.Group>
 
-        <Form.Group className="mb-3">
-          <Form.Label>Пароль</Form.Label>
-          <Form.Control
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </Form.Group>
+          <Form.Group>
+            <Form.Label>Пароль</Form.Label>
+            <Form.Control
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Введите пароль"
+              required
+            />
+          </Form.Group>
 
-        <Button variant="primary" type="submit" className="w-100 mb-3">
-          Войти
-        </Button>
+          <Button variant="primary" type="submit">
+            Войти
+          </Button>
 
-        <div className="text-center">
-          <Link to="/register">Нет аккаунта? Зарегистрируйтесь</Link>
-        </div>
-      </Form>
-    </Container>
+          <p>
+            Нет аккаунта? <Link to="/register">Зарегистрируйтесь</Link>
+          </p>
+        </Form>
+      </div>
+    </div>
   );
 };
 
