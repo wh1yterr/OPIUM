@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { Container, Table, Button, Form } from "react-bootstrap";
 import axios from "axios";
 import { toast } from "react-hot-toast";
-import { API_BASE_URL } from "../config";
 
 const Cart = () => {
   const [cartItems, setCartItems] = useState([]);
@@ -14,7 +13,7 @@ const Cart = () => {
         if (!token) throw new Error("Требуется авторизация");
 
         const response = await axios.get(
-          `${API_BASE_URL}/cart`,
+          `https://opium-2-igrl.onrender.com/api/cart`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -33,7 +32,7 @@ const Cart = () => {
     try {
       const token = localStorage.getItem("token");
       await axios.delete(
-        `${API_BASE_URL}/cart/${itemId}`,
+        `https://opium-2-igrl.onrender.com/api/cart/${itemId}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -50,7 +49,7 @@ const Cart = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.put(
-        `${API_BASE_URL}/cart/${itemId}/quantity`,
+        `https://opium-2-igrl.onrender.com/api/cart/${itemId}/quantity`,
         { quantity: newQuantity },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -92,7 +91,7 @@ const Cart = () => {
 
       console.log("Отправка заказа:", { items: cartItems });
       const response = await axios.post(
-        `${API_BASE_URL}/orders`,
+        `https://opium-2-igrl.onrender.com/api/orders`,
         { items: cartItems },
         { headers: { Authorization: `Bearer ${token}` } }
       );

@@ -3,7 +3,6 @@ import { Container, Tabs, Tab, Table, Form, Pagination, Button, Row, Col } from 
 import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
 import { toast } from 'react-hot-toast';
-import { API_BASE_URL } from '../config';
 import './Admin.css'
 
 const Admin = () => {
@@ -33,12 +32,12 @@ const Admin = () => {
           return;
         }
 
-        const ordersResponse = await axios.get(`${API_BASE_URL}/orders/all`, {
+        const ordersResponse = await axios.get(`https://opium-2-igrl.onrender.com/api/orders/all`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setOrders(ordersResponse.data);
 
-        const productsResponse = await axios.get(`${API_BASE_URL}/products`, {
+        const productsResponse = await axios.get(`https://opium-2-igrl.onrender.com/api/products`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setProducts(productsResponse.data);
@@ -54,7 +53,7 @@ const Admin = () => {
     try {
       const token = localStorage.getItem('token');
       await axios.put(
-        `${API_BASE_URL}/orders/${orderId}/status`,
+        `https://opium-2-igrl.onrender.com/api/orders/${orderId}/status`,
         { status },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -78,7 +77,7 @@ const Admin = () => {
       }
 
       await axios.put(
-        `${API_BASE_URL}/products/${productId}/quantity`,
+        `https://opium-2-igrl.onrender.com/api/products/${productId}/quantity`,
         { quantity: parsedQuantity },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -102,7 +101,7 @@ const Admin = () => {
       };
 
       const response = await axios.post(
-        `${API_BASE_URL}/products`,
+        `https://opium-2-igrl.onrender.com/api/products`,
         productData,
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -120,7 +119,7 @@ const Admin = () => {
     try {
       const token = localStorage.getItem('token');
       const response = await axios.delete(
-        `${API_BASE_URL}/products/${productId}`,
+        `https://opium-2-igrl.onrender.com/api/products/${productId}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
@@ -142,7 +141,7 @@ const Admin = () => {
       }
 
       await axios.put(
-        `${API_BASE_URL}/products/${productId}`,
+        `https://opium-2-igrl.onrender.com/api/products/${productId}`,
         { name, price: parsedPrice },
         { headers: { Authorization: `Bearer ${token}` } }
       );

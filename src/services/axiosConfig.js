@@ -1,9 +1,8 @@
 import axios from 'axios';
 import { authService } from './authService';
-import { API_BASE_URL } from '../config';
 
 const api = axios.create({
-  baseURL: API_BASE_URL
+  baseURL: 'https://opium-2-igrl.onrender.com/api'
 });
 
 api.interceptors.response.use(

@@ -3,7 +3,6 @@ import { Form, Button, Container, Alert } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-hot-toast";
-import { API_BASE_URL } from "../config";
 
 const Register = ({ setIsAuthenticated }) => {
   const [formData, setFormData] = useState({
@@ -48,13 +47,13 @@ const Register = ({ setIsAuthenticated }) => {
 
     try {
       const response = await axios.post(
-        `${API_BASE_URL}/auth/register`,
+        `https://opium-2-igrl.onrender.com/api/auth/register`,
         formData
       );
 
       // Если регистрация успешна, выполняем вход
       const loginResponse = await axios.post(
-        `${API_BASE_URL}/auth/login`,
+        `https://opium-2-igrl.onrender.com/api/auth/login`,
         {
           email: formData.email,
           password: formData.password,
