@@ -76,7 +76,7 @@ module.exports = (pool) => {
         `INSERT INTO cart (user_id, product_id, size_id, quantity) 
          VALUES ($1, $2, $3, $4) 
          ON CONFLICT (user_id, product_id, size_id) 
-         DO UPDATE SET quantity = cart.quantity + $4 
+         DO UPDATE SET quantity = cart.quantity + EXCLUDED.quantity 
          RETURNING *`,
         [token.id, productId, sizeId, quantity]
       );

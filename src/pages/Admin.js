@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Container, Tabs, Tab, Table, Form, Pagination, Button, Row, Col } from "react-bootstrap";
-import axios from 'axios';
-import { jwtDecode } from 'jwt-decode';
+import api from '../services/axiosConfig';
+import jwtDecode from 'jwt-decode';
 import { toast } from 'react-hot-toast';
 import './Admin.css'
 
@@ -32,14 +32,10 @@ const Admin = () => {
           return;
         }
 
-        const ordersResponse = await axios.get(`https://opium-2-igrl.onrender.com/api/orders/all`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const ordersResponse = await api.get('/orders/all');
         setOrders(ordersResponse.data);
 
-        const productsResponse = await axios.get(`https://opium-2-igrl.onrender.com/api/products`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const productsResponse = await api.get('/products');
         setProducts(productsResponse.data);
       } catch (err) {
         toast.error(err.response?.data?.message || 'Ошибка загрузки данных');
@@ -51,12 +47,7 @@ const Admin = () => {
 
   const updateOrderStatus = async (orderId, status) => {
     try {
-      const token = localStorage.getItem('token');
-      await axios.put(
-        `https://opium-2-igrl.onrender.com/api/orders/${orderId}/status`,
-        { status },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      await api.put(`/orders/${orderId}/status`, { status });
       setOrders(orders.map(order =>
         order.id === parseInt(orderId) ? { ...order, status } : order
       ));
@@ -69,18 +60,12 @@ const Admin = () => {
 
   const updateProductQuantity = async (productId, quantity) => {
     try {
-      const token = localStorage.getItem('token');
       const parsedQuantity = parseInt(quantity) || 0;
       if (parsedQuantity < 0) {
         toast.error('Количество не может быть отрицательным');
         return;
       }
-
-      await axios.put(
-        `https://opium-2-igrl.onrender.com/api/products/${productId}/quantity`,
-        { quantity: parsedQuantity },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      await api.put(`/products/${productId}/quantity`, { quantity: parsedQuantity });
       setProducts(products.map(product =>
         product.id === parseInt(productId) ? { ...product, quantity: parsedQuantity } : product
       ));
@@ -94,17 +79,8 @@ const Admin = () => {
   const handleAddProduct = async (e) => {
     e.preventDefault();
     try {
-      const token = localStorage.getItem('token');
-      const productData = {
-        ...newProduct,
-        price: parseFloat(newProduct.price) || 0,
-      };
-
-      const response = await axios.post(
-        `https://opium-2-igrl.onrender.com/api/products`,
-        productData,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      const productData = { ...newProduct, price: parseFloat(newProduct.price) || 0 };
+      const response = await api.post('/products', productData);
 
       setProducts([...products, response.data]);
       setNewProduct({ name: '', description: '', image: '', price: '' });
@@ -117,11 +93,7 @@ const Admin = () => {
 
   const deleteProduct = async (productId) => {
     try {
-      const token = localStorage.getItem('token');
-      const response = await axios.delete(
-        `https://opium-2-igrl.onrender.com/api/products/${productId}`,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      const response = await api.delete(`/products/${productId}`);
 
       setProducts(products.filter(product => product.id !== parseInt(productId)));
       toast.success(response.data.message || 'Продукт помечен как удалённый');
@@ -133,18 +105,12 @@ const Admin = () => {
 
   const updateProductInfo = async (productId, name, price) => {
     try {
-      const token = localStorage.getItem('token');
       const parsedPrice = parseFloat(price) || 0;
       if (parsedPrice < 0) {
         toast.error('Цена не может быть отрицательной');
         return;
       }
-
-      await axios.put(
-        `https://opium-2-igrl.onrender.com/api/products/${productId}`,
-        { name, price: parsedPrice },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      await api.put(`/products/${productId}`, { name, price: parsedPrice });
       setProducts(products.map(product =>
         product.id === parseInt(productId) ? { ...product, name, price: parsedPrice } : product
       ));

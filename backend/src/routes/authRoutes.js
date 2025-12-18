@@ -29,7 +29,8 @@ module.exports = (pool) => {
   // Применяем middleware только к защищенным маршрутам
   router.use('/profile', authenticateToken);
   router.use('/profile/address', authenticateToken);
-  router.use('/refresh-token', authenticateToken);
+  // NOTE: не защищаем /refresh-token обычным authenticateToken,
+  // так как для обновления токена может приходить истёкший access token.
 
   // Генерация токена
   const generateToken = (user) => {
