@@ -224,7 +224,7 @@ return (
                           className="admin-input"
                         />
                         <Button variant="danger" size="sm" className="mt-2" onClick={async () => {
-                          if (!confirm('Удалить размер?')) return;
+                          if (!window.confirm('Удалить размер?')) return;
                           try {
                             await api.delete(`/sizes/${size.id}`);
                             setSizes(sizes.filter(s => s.id !== size.id));
