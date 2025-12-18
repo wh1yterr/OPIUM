@@ -174,13 +174,15 @@ return (
               <Table striped bordered hover className="admin-table">
                 <thead>
                   <tr>
-                    const response = await api.delete(`/products/${productId}`);
-
-                    setProducts(products.filter(product => product.id !== parseInt(productId)));
-                    toast.success(response.data.message || 'Продукт помечен как удалённый');
-                  } catch (err) {
-                    toast.error(err.response?.data?.message || 'Ошибка удаления продукта');
-                    console.error('Ошибка:', err.response || err);
+                    <th>ID</th>
+                    <th>Размер</th>
+                    <th>Остаток</th>
+                    <th>Действия</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {sizes.map(size => (
+                    <tr key={size.id}>
                       <td>{size.id}</td>
                       <td>{size.size_name}</td>
                       <td>{size.quantity}</td>
