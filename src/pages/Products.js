@@ -71,30 +71,30 @@ const Products = () => {
 
   return (
     <Container className="products-container">
-      <h2 className="products-title">Наши продукты</h2>
+      <h2 className="products-title">НАШИ ПРОДУКТЫ</h2>
       <Row>
         {products.map((product) => (
           <Col key={product.id} xs={12} sm={6} md={4} className="mb-4">
-            <Card className="product-card h-100">
-              <div style={{ height: "200px", overflow: "hidden", borderTopLeftRadius: "15px", borderTopRightRadius: "15px" }}>
-                <Card.Img
-                  variant="top"
+            <div className="product-card">
+              <div className="product-image-wrapper">
+                <img
                   src={product.image}
-                  style={{ height: "100%", width: "100%", objectFit: "cover" }}
+                  alt={product.name}
+                  className="product-image"
                 />
+                <div className="product-overlay"></div>
               </div>
-              <Card.Body className="d-flex flex-column justify-content-between">
-                <div>
-                  <Card.Title className="card-title">{product.name}</Card.Title>
-                  <Card.Text className="card-text">{product.description}</Card.Text>
-                  <Card.Text className="price">{product.price} ₽</Card.Text>
-                </div>
-                <div>
-                  <Form.Group className="mb-3">
-                    <Form.Label className="fw-semibold">Количество</Form.Label>
+              <div className="product-info">
+                <h3 className="product-name">{product.name}</h3>
+                <p className="product-description">{product.description}</p>
+                <div className="product-price">{product.price} ₽</div>
+                
+                <div className="product-actions">
+                  <div className="quantity-section">
+                    <label className="quantity-label">КОЛИЧЕСТВО</label>
                     <div className="quantity-controls">
-                      <Button
-                        variant="outline-secondary"
+                      <button
+                        className="quantity-btn"
                         onClick={() =>
                           handleQuantityChange(
                             product.id,
@@ -104,9 +104,10 @@ const Products = () => {
                         disabled={(quantities[product.id] || 1) <= 1}
                       >
                         −
-                      </Button>
-                      <Form.Control
+                      </button>
+                      <input
                         type="number"
+                        className="quantity-input"
                         value={quantities[product.id] || 1}
                         onChange={(e) =>
                           handleQuantityChange(
@@ -115,10 +116,9 @@ const Products = () => {
                           )
                         }
                         min="1"
-                        className="text-center"
                       />
-                      <Button
-                        variant="outline-secondary"
+                      <button
+                        className="quantity-btn"
                         onClick={() =>
                           handleQuantityChange(
                             product.id,
@@ -127,19 +127,18 @@ const Products = () => {
                         }
                       >
                         +
-                      </Button>
+                      </button>
                     </div>
-                  </Form.Group>
-                  <Button
-                    variant="success"
+                  </div>
+                  <button
+                    className="add-to-cart-btn"
                     onClick={() => addToCart(product.id)}
-                    className="add-to-cart w-100"
                   >
-                    Добавить в корзину
-                  </Button>
+                    ДОБАВИТЬ В КОРЗИНУ
+                  </button>
                 </div>
-              </Card.Body>
-            </Card>
+              </div>
+            </div>
           </Col>
         ))}
       </Row>
