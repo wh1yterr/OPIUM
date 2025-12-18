@@ -60,10 +60,10 @@ module.exports = (pool) => {
       }
 
       const hashedPassword = await bcrypt.hash(password, 10);
-      // Используем contact_face для хранения полного имени, остальные поля оставляем NULL
+      // Используем contact_face для хранения полного имени, organization_name - пустая строка по умолчанию
       const result = await pool.query(
-        'INSERT INTO users (email, password, contact_face, phone, role) VALUES ($1, $2, $3, $4, $5) RETURNING *',
-        [email, hashedPassword, fullName, phone, 'user']
+        'INSERT INTO users (email, password, contact_face, phone, role, organization_name) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
+        [email, hashedPassword, fullName, phone, 'user', '']
       );
 
       const user = result.rows[0];

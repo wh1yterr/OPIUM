@@ -10,7 +10,7 @@ const app = express();
 
 // Настройка CORS
 const corsOptions = {
-  origin: ['https://opium-blond.vercel.app/', 'http://localhost:3000'],
+  origin: ['https://opium-blond.vercel.app', 'http://localhost:3000'],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
