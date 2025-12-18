@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Container, Tabs, Tab, Table, Form, Pagination, Button, Row, Col } from "react-bootstrap";
 import api from '../services/axiosConfig';
-import jwtDecode from 'jwt-decode';
+import * as jwtDecodeLib from 'jwt-decode';
+const jwtDecode = jwtDecodeLib && jwtDecodeLib.default ? jwtDecodeLib.default : jwtDecodeLib;
 import { toast } from 'react-hot-toast';
 import './Admin.css'
 
