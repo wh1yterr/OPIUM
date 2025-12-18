@@ -110,13 +110,13 @@
   gap: 15px;
 }
 
-.quantity-section {
+.size-section {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
 }
 
-.quantity-label {
+.size-label {
   font-size: 0.75rem;
   color: #666666;
   font-weight: 700;
@@ -125,64 +125,71 @@
   margin: 0;
 }
 
-.quantity-controls {
+.size-selector {
   display: flex;
-  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
   justify-content: center;
-  gap: 0;
-  background-color: #000000;
-  border: 1px solid #333333;
 }
 
-.quantity-btn {
-  width: 45px;
+.size-btn {
+  min-width: 50px;
   height: 45px;
+  padding: 0 15px;
   background-color: #000000;
-  border: none;
+  border: 2px solid #333333;
   color: #ffffff;
-  font-size: 1.3rem;
+  font-size: 0.9rem;
   font-weight: 700;
   cursor: pointer;
-  transition: all 0.2s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  transition: all 0.3s ease;
+  position: relative;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
-.quantity-btn:hover:not(:disabled) {
+.size-btn:hover:not(:disabled) {
+  border-color: #dc143c;
+  background-color: #1a1a1a;
+  transform: translateY(-2px);
+}
+
+.size-btn.selected {
   background-color: #dc143c;
+  border-color: #dc143c;
   color: #ffffff;
 }
 
-.quantity-btn:disabled {
-  background-color: #000000;
-  color: #333333;
+.size-btn.out-of-stock {
+  background-color: #0a0a0a;
+  border-color: #1a1a1a;
+  color: #444444;
   cursor: not-allowed;
   opacity: 0.5;
+  position: relative;
 }
 
-.quantity-input {
-  width: 60px;
-  height: 45px;
+.size-btn.out-of-stock:hover {
+  transform: none;
+  border-color: #1a1a1a;
+  background-color: #0a0a0a;
+}
+
+.size-btn .sold-out {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 1.5rem;
+  color: #dc143c;
+}
+
+.no-sizes {
+  color: #666666;
+  font-size: 0.85rem;
   text-align: center;
-  background-color: #000000;
-  border: none;
-  border-left: 1px solid #333333;
-  border-right: 1px solid #333333;
-  color: #ffffff;
-  font-weight: 700;
-  font-size: 1rem;
-  outline: none;
-}
-
-.quantity-input::-webkit-inner-spin-button,
-.quantity-input::-webkit-outer-spin-button {
-  -webkit-appearance: none;
   margin: 0;
-}
-
-.quantity-input:focus {
-  background-color: #1a1a1a;
+  padding: 10px;
 }
 
 /* Кнопка добавления в корзину */
@@ -268,19 +275,23 @@
     font-size: 1.3rem;
   }
 
-  .quantity-btn {
-    width: 40px;
+  .size-btn {
+    min-width: 45px;
     height: 40px;
-    font-size: 1.2rem;
+    padding: 0 12px;
+    font-size: 0.85rem;
   }
 
-  .quantity-input {
-    width: 55px;
-    height: 40px;
+  .size-selector {
+    gap: 8px;
   }
 
   .add-to-cart-btn {
     padding: 13px;
+    font-size: 0.8rem;
+  }
+  
+  .no-sizes {
     font-size: 0.8rem;
   }
 }

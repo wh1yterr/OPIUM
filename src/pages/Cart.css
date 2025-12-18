@@ -53,6 +53,18 @@
   border: 1px solid #1a1a1a;
 }
 
+/* Бейдж размера */
+.size-badge {
+  display: inline-block;
+  padding: 6px 14px;
+  background-color: #dc143c;
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
 /* Инпуты количества */
 .cart-container .form-control {
   background-color: #1a1a1a !important;

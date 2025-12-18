@@ -64,6 +64,7 @@ const productsRoutes = require('./src/routes/productsRoutes');
 const authRoutes = require('./src/routes/authRoutes');
 const cartRoutes = require('./src/routes/cartRoutes');
 const ordersRoutes = require('./src/routes/ordersRoutes');
+const sizesRoutes = require('./src/routes/sizesRoutes');
 
 // Базовые маршруты без аутентификации
 app.use('/api/auth', authRoutes(pool));
@@ -72,6 +73,7 @@ app.use('/api/orders', ordersRoutes(pool));
 // Защищенные маршруты с аутентификацией
 app.use('/api/products', authenticateToken, productsRoutes(pool));
 app.use('/api/cart', authenticateToken, cartRoutes(pool));
+app.use('/api/sizes', authenticateToken, sizesRoutes(pool));
 
 // Обработка ошибок
 app.use((err, req, res, next) => {

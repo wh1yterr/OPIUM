@@ -142,6 +142,7 @@ const Cart = () => {
             <thead>
               <tr>
                 <th>Название</th>
+                <th>Размер</th>
                 <th>Цена</th>
                 <th>Количество</th>
                 <th>Действие</th>
@@ -151,6 +152,9 @@ const Cart = () => {
               {cartItems.map((item) => (
                 <tr key={item.id}>
                   <td>{item.name}</td>
+                  <td>
+                    <span className="size-badge">{item.size_name || 'N/A'}</span>
+                  </td>
                   <td>{item.price}</td>
                   <td>
                     <div className="d-flex align-items-center justify-content-center">

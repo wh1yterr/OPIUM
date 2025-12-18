@@ -21,9 +21,11 @@ module.exports = (pool) => {
     try {
       const token = req.user;
       const result = await pool.query(
-        `SELECT c.id, c.quantity, p.id AS product_id, p.name, p.description, p.price, p.image, p.quantity AS available_quantity
+        `SELECT c.id, c.quantity, c.size_id, p.id AS product_id, p.name, p.description, p.price, p.image, 
+         s.size_name, s.quantity AS available_quantity
          FROM cart c 
          JOIN products p ON c.product_id = p.id 
+         LEFT JOIN sizes s ON c.size_id = s.id
          WHERE c.user_id = $1`,
         [token.id]
       );
@@ -38,17 +40,28 @@ module.exports = (pool) => {
   router.post('/', async (req, res) => {
     try {
       const token = req.user;
-      const { productId, quantity = 1 } = req.body;
+      const { productId, sizeId, quantity = 1 } = req.body;
 
-      // Проверка остатка перед добавлением
-      const productResult = await pool.query(
-        'SELECT quantity FROM products WHERE id = $1',
-        [productId]
+      if (!sizeId) {
+        return res.status(400).json({ message: 'Необходимо выбрать размер' });
+      }
+
+      // Проверка остатка для выбранного размера
+      const sizeResult = await pool.query(
+        'SELECT quantity FROM sizes WHERE id = $1 AND product_id = $2',
+        [sizeId, productId]
       );
-      const availableQuantity = productResult.rows[0]?.quantity || 0;
+      
+      if (sizeResult.rowCount === 0) {
+        return res.status(404).json({ message: 'Размер не найден' });
+      }
+
+      const availableQuantity = sizeResult.rows[0]?.quantity || 0;
+      
+      // Проверяем текущее количество в корзине
       const currentCartResult = await pool.query(
-        'SELECT quantity FROM cart WHERE user_id = $1 AND product_id = $2',
-        [token.id, productId]
+        'SELECT quantity FROM cart WHERE user_id = $1 AND product_id = $2 AND size_id = $3',
+        [token.id, productId, sizeId]
       );
       const currentQuantity = currentCartResult.rows[0]?.quantity || 0;
       const newQuantity = currentQuantity + quantity;
@@ -60,12 +73,12 @@ module.exports = (pool) => {
       }
 
       const result = await pool.query(
-        `INSERT INTO cart (user_id, product_id, quantity) 
-         VALUES ($1, $2, $3) 
-         ON CONFLICT (user_id, product_id) 
-         DO UPDATE SET quantity = cart.quantity + $3 
+        `INSERT INTO cart (user_id, product_id, size_id, quantity) 
+         VALUES ($1, $2, $3, $4) 
+         ON CONFLICT (user_id, product_id, size_id) 
+         DO UPDATE SET quantity = cart.quantity + $4 
          RETURNING *`,
-        [token.id, productId, quantity]
+        [token.id, productId, sizeId, quantity]
       );
       res.status(201).json({ message: 'Товар добавлен в корзину', item: result.rows[0] });
     } catch (err) {

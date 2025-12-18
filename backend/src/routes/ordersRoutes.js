@@ -45,15 +45,18 @@ module.exports = (pool) => {
 
       // Проверка остатков перед оформлением
       for (const item of items) {
-        const productResult = await pool.query(
-          'SELECT quantity FROM products WHERE id = $1',
-          [item.product_id]
-        );
-        const availableQuantity = productResult.rows[0]?.quantity || 0;
-        if (availableQuantity < item.quantity) {
-          return res.status(400).json({ 
-            message: `Недостаточно товара "${item.name || 'неизвестный товар'}" в наличии. Остаток: ${availableQuantity}` 
-          });
+        if (item.size_id) {
+          // Проверка остатка для конкретного размера
+          const sizeResult = await pool.query(
+            'SELECT quantity FROM sizes WHERE id = $1',
+            [item.size_id]
+          );
+          const availableQuantity = sizeResult.rows[0]?.quantity || 0;
+          if (availableQuantity < item.quantity) {
+            return res.status(400).json({ 
+              message: `Недостаточно товара "${item.name || 'неизвестный товар'}" размера ${item.size_name || ''} в наличии. Остаток: ${availableQuantity}` 
+            });
+          }
         }
       }
 
@@ -89,14 +92,16 @@ module.exports = (pool) => {
       for (const item of items) {
         const price = typeof item.price === 'string' ? parseFloat(item.price.split('₽')[0]) : parseFloat(item.price);
         await pool.query(
-          'INSERT INTO order_items (order_id, product_id, quantity, price_at_order) VALUES ($1, $2, $3, $4)',
-          [orderId, item.product_id, item.quantity, price]
+          'INSERT INTO order_items (order_id, product_id, quantity, price_at_order, size_name) VALUES ($1, $2, $3, $4, $5)',
+          [orderId, item.product_id, item.quantity, price, item.size_name || null]
         );
-        // Вычитание остатка
-        await pool.query(
-          'UPDATE products SET quantity = quantity - $1 WHERE id = $2',
-          [item.quantity, item.product_id]
-        );
+        // Вычитание остатка из таблицы размеров
+        if (item.size_id) {
+          await pool.query(
+            'UPDATE sizes SET quantity = quantity - $1 WHERE id = $2',
+            [item.quantity, item.size_id]
+          );
+        }
       }
 
       // Очистка корзины
@@ -140,7 +145,8 @@ module.exports = (pool) => {
                     'product_id', oi.product_id,
                     'name', p.name,
                     'quantity', oi.quantity,
-                    'price_at_order', oi.price_at_order
+                    'price_at_order', oi.price_at_order,
+                    'size_name', oi.size_name
                   )
                 ) as items
          FROM orders o
@@ -171,7 +177,8 @@ module.exports = (pool) => {
                     'product_id', oi.product_id,
                     'name', p.name,
                     'quantity', oi.quantity,
-                    'price_at_order', oi.price_at_order
+                    'price_at_order', oi.price_at_order,
+                    'size_name', oi.size_name
                   )
                 ) as items
          FROM orders o

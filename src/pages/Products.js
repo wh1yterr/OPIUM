@@ -7,7 +7,8 @@ import "./Products.css"; // Подключение CSS
 const Products = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [quantities, setQuantities] = useState({});
+  const [selectedSizes, setSelectedSizes] = useState({});
+  const [productSizes, setProductSizes] = useState({});
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -25,6 +26,22 @@ const Products = () => {
         );
 
         setProducts(response.data);
+        
+        // Загружаем размеры для каждого продукта
+        const sizesPromises = response.data.map(product =>
+          axios.get(
+            `https://opium-2-igrl.onrender.com/api/sizes/product/${product.id}`,
+            { headers: { Authorization: `Bearer ${token}` } }
+          )
+        );
+        
+        const sizesResponses = await Promise.all(sizesPromises);
+        const sizesData = {};
+        response.data.forEach((product, index) => {
+          sizesData[product.id] = sizesResponses[index].data;
+        });
+        
+        setProductSizes(sizesData);
         setLoading(false);
       } catch (err) {
         toast.error("Ошибка при загрузке продуктов");
@@ -35,10 +52,10 @@ const Products = () => {
     fetchProducts();
   }, []);
 
-  const handleQuantityChange = (productId, value) => {
-    setQuantities((prev) => ({
+  const handleSizeSelect = (productId, sizeId) => {
+    setSelectedSizes((prev) => ({
       ...prev,
-      [productId]: value > 0 ? value : 1,
+      [productId]: sizeId,
     }));
   };
 
@@ -50,15 +67,20 @@ const Products = () => {
         return;
       }
 
-      const quantity = quantities[productId] || 1;
+      const sizeId = selectedSizes[productId];
+      if (!sizeId) {
+        toast.error("Пожалуйста, выберите размер");
+        return;
+      }
+
       const response = await axios.post(
         `https://opium-2-igrl.onrender.com/api/cart`,
-        { productId, quantity },
+        { productId, sizeId, quantity: 1 },
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
       toast.success(response.data.message);
-      setQuantities((prev) => ({ ...prev, [productId]: 1 }));
+      setSelectedSizes((prev) => ({ ...prev, [productId]: null }));
     } catch (err) {
       toast.error(
         err.response?.data?.message || "Ошибка при добавлении в корзину"
@@ -90,44 +112,26 @@ const Products = () => {
                 <div className="product-price">{product.price} ₽</div>
                 
                 <div className="product-actions">
-                  <div className="quantity-section">
-                    <label className="quantity-label">КОЛИЧЕСТВО</label>
-                    <div className="quantity-controls">
-                      <button
-                        className="quantity-btn"
-                        onClick={() =>
-                          handleQuantityChange(
-                            product.id,
-                            (quantities[product.id] || 1) - 1
-                          )
-                        }
-                        disabled={(quantities[product.id] || 1) <= 1}
-                      >
-                        −
-                      </button>
-                      <input
-                        type="number"
-                        className="quantity-input"
-                        value={quantities[product.id] || 1}
-                        onChange={(e) =>
-                          handleQuantityChange(
-                            product.id,
-                            parseInt(e.target.value) || 1
-                          )
-                        }
-                        min="1"
-                      />
-                      <button
-                        className="quantity-btn"
-                        onClick={() =>
-                          handleQuantityChange(
-                            product.id,
-                            (quantities[product.id] || 1) + 1
-                          )
-                        }
-                      >
-                        +
-                      </button>
+                  <div className="size-section">
+                    <label className="size-label">ВЫБЕРИТЕ РАЗМЕР</label>
+                    <div className="size-selector">
+                      {productSizes[product.id] && productSizes[product.id].length > 0 ? (
+                        productSizes[product.id].map((size) => (
+                          <button
+                            key={size.id}
+                            className={`size-btn ${
+                              selectedSizes[product.id] === size.id ? 'selected' : ''
+                            } ${size.quantity === 0 ? 'out-of-stock' : ''}`}
+                            onClick={() => handleSizeSelect(product.id, size.id)}
+                            disabled={size.quantity === 0}
+                          >
+                            {size.size_name}
+                            {size.quantity === 0 && <span className="sold-out">✕</span>}
+                          </button>
+                        ))
+                      ) : (
+                        <p className="no-sizes">Размеры скоро появятся</p>
+                      )}
                     </div>
                   </div>
                   <button
