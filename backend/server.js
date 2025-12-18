@@ -8,9 +8,15 @@ dotenv.config();
 
 const app = express();
 
-// Настройка CORS
+// Настройка CORS — поддерживаем FRONTEND_URL через env и несколько известных доменов
+const allowedOrigins = [
+  process.env.FRONTEND_URL,
+  'https://opium-blond.vercel.app',
+  'http://localhost:3000'
+].filter(Boolean);
+
 const corsOptions = {
-  origin: ['https://opium-blond.vercel.app', 'http://localhost:3000'],
+  origin: allowedOrigins,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,

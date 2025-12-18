@@ -2,31 +2,47 @@ import axios from 'axios';
 import { authService } from './authService';
 
 const api = axios.create({
-  baseURL: 'https://opium-2-igrl.onrender.com/api'
+  baseURL: process.env.REACT_APP_API_URL || 'https://opium-2-igrl.onrender.com/api',
+  withCredentials: true
 });
 
+// Attach access token to every request if present
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem('token');
+  if (token) {
+    config.headers = config.headers || {};
+    config.headers['Authorization'] = `Bearer ${token}`;
+  }
+  return config;
+});
+
+// Handle 401 by trying to refresh token once
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
-    
-    if (error.response?.status === 401 && !originalRequest._retry) {
+
+    if (error.response?.status === 401 && !originalRequest?._retry) {
       originalRequest._retry = true;
-      
+
       try {
-        const newToken = await authService.refreshToken();
+        const currentAccess = localStorage.getItem('token');
+        const newToken = await authService.refreshToken(currentAccess);
         if (newToken) {
+          localStorage.setItem('token', newToken);
+          originalRequest.headers = originalRequest.headers || {};
           originalRequest.headers['Authorization'] = `Bearer ${newToken}`;
           return api(originalRequest);
         }
       } catch (refreshError) {
         localStorage.removeItem('token');
+        localStorage.removeItem('refreshToken');
         window.location.href = '/login';
       }
     }
-    
+
     return Promise.reject(error);
   }
 );
 
-export default api; 
+export default api;

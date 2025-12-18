@@ -100,14 +100,24 @@ export const authService = {
   // Обновление токена
   refreshToken: async (token) => {
     console.log('=== Обновление токена ===');
-    if (!token) {
+    // token optional: prefer explicit param, then stored refreshToken, then cookie
+    let tokenToUse = token;
+    if (!tokenToUse) {
+      tokenToUse = localStorage.getItem('refreshToken') || localStorage.getItem('token') || (function getCookie(name) {
+        const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+        return match ? match[2] : null;
+      })('refreshToken');
+    }
+
+    if (!tokenToUse) {
       console.error('Токен отсутствует');
       throw new Error('Токен не предоставлен');
     }
 
     try {
       const response = await api.post('/auth/refresh-token', {}, {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${tokenToUse}` },
+        withCredentials: true
       });
       console.log('Ответ сервера:', response.data);
       return response.data.token;
