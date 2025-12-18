@@ -5,23 +5,23 @@
 В настройках проекта на Vercel добавьте следующие переменные окружения:
 
 ```
-REACT_APP_API_URL=https://your-backend-url.onrender.com/api
-REACT_APP_FRONTEND_URL=https://your-frontend-url.vercel.app
+REACT_APP_API_URL=https://opium-2-igrl.onrender.com/api
+REACT_APP_FRONTEND_URL=https://opium-blond.vercel.app
 ```
 
 ### Где добавить:
 1. Зайдите в настройки проекта на Vercel
 2. Перейдите в раздел "Environment Variables"
 3. Добавьте переменные:
-   - `REACT_APP_API_URL` = ваш URL бэкенда (например: `https://opium-backend.onrender.com/api`)
-   - `REACT_APP_FRONTEND_URL` = ваш URL фронтенда (например: `https://opium.vercel.app`)
+   - `REACT_APP_API_URL` = ваш URL бэкенда (например: `https://opium-2-igrl.onrender.com/api`)
+   - `REACT_APP_FRONTEND_URL` = ваш URL фронтенда (например: `https://opium-blond.vercel.app`)
 
 ## Backend (Render)
 
 В настройках проекта на Render добавьте следующие переменные окружения:
 
 ```
-FRONTEND_URL=https://your-frontend-url.vercel.app,http://localhost:3000
+FRONTEND_URL=https://opium-blond.vercel.app,http://localhost:3000
 DB_USER=ваш_пользователь_БД
 DB_HOST=ваш_хост_БД
 DB_NAME=ваше_имя_БД

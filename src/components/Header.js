@@ -1,7 +1,7 @@
 import React from 'react';
 import { Container, Nav, Navbar, Button } from 'react-bootstrap';
 import { useNavigate, Link } from 'react-router-dom';
-import {jwtDecode} from 'jwt-decode';
+import {jwtDecode} from 'jwt-decode'; 
 
 const Header = ({ isAuthenticated, handleLogout }) => {
   const [userRole, setUserRole] = React.useState(null);

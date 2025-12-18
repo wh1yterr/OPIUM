@@ -37,7 +37,7 @@ Render пытается собрать фронтенд из корня прое
 Добавьте следующие переменные в настройках сервиса:
 
 ```
-FRONTEND_URL=https://your-frontend-url.vercel.app,http://localhost:3000
+FRONTEND_URL=https://opium-blond.vercel.app,http://localhost:3000
 DB_USER=ваш_пользователь_БД
 DB_HOST=ваш_хост_БД
 DB_NAME=ваше_имя_БД
