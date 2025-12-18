@@ -122,6 +122,9 @@ out/
 # Gatsby
 .cache/
 # public/ - НЕ игнорируем, это важная папка для React приложения
+# Но игнорируем папку images внутри public
+public/images/
+build/images/
 
 # Storybook build outputs
 .out
