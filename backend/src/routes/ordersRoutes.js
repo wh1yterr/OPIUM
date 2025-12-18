@@ -1,17 +1,9 @@
 const express = require('express');
-const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
-const fs = require('fs');
-const path = require('path');
-const axios = require('axios');
 
 module.exports = (pool) => {
   const router = express.Router();
 
-  // Функция для генерации уникального 6-символьного кода
-  const generateOrderCode = () => {
-    return crypto.randomBytes(3).toString('hex').toUpperCase(); // Пример: "A1B2C3"
-  };
 
   // Middleware для проверки токена
   const authenticateToken = (req, res, next) => {
@@ -65,26 +57,10 @@ module.exports = (pool) => {
         return total + price * item.quantity;
       }, 0);
 
-      // Генерация уникального кода
-      let orderCode = generateOrderCode();
-      let existingOrder = await pool.query(
-        'SELECT order_code FROM orders WHERE order_code = $1',
-        [orderCode]
-      );
-
-      // Проверка уникальности кода
-      while (existingOrder.rows.length > 0) {
-        orderCode = generateOrderCode();
-        existingOrder = await pool.query(
-          'SELECT order_code FROM orders WHERE order_code = $1',
-          [orderCode]
-        );
-      }
-
-      // Создание заказа с order_code
+      // Создание заказа (без генерации order_code)
       const orderResult = await pool.query(
-        'INSERT INTO orders (user_id, total_price, status, order_code) VALUES ($1, $2, $3, $4) RETURNING *',
-        [token.id, totalPrice, 'pending', orderCode]
+        'INSERT INTO orders (user_id, total_price, status) VALUES ($1, $2, $3) RETURNING *',
+        [token.id, totalPrice, 'pending']
       );
       const orderId = orderResult.rows[0].id;
 
@@ -119,19 +95,7 @@ module.exports = (pool) => {
     }
   });
 
-  // Получение заказа по order_code
-  router.get('/code/:order_code', async (req, res) => {
-    const { order_code } = req.params;
-    try {
-      const result = await pool.query('SELECT * FROM orders WHERE order_code = $1', [order_code]);
-      if (result.rows.length === 0) {
-        return res.status(404).json({ message: 'Order not found' });
-      }
-      res.json(result.rows[0]);
-    } catch (err) {
-      res.status(500).json({ message: 'Server error', error: err.message });
-    }
-  });
+  // NOTE: order_code lookup removed — orders no longer issue codes on creation
 
   // Получение заказов пользователя
   router.get('/', authenticateToken, async (req, res) => {
@@ -216,27 +180,7 @@ module.exports = (pool) => {
         return res.status(404).json({ message: 'Заказ не найден' });
       }
 
-      // === Уведомление пользователей через Telegram ===
-      try {
-        // 1. Получить order_code по orderId
-        const orderResult = await pool.query('SELECT order_code FROM orders WHERE id = $1', [orderId]);
-        const order_code = orderResult.rows[0]?.order_code;
-        if (order_code) {
-          // 2. Получить user_id из tracked_orders
-          const trackedResult = await pool.query('SELECT user_id FROM tracked_orders WHERE order_code = $1', [order_code]);
-          const notifiedUsers = trackedResult.rows.map(row => row.user_id);
-          // 3. Отправить уведомление через Telegram Bot API
-          for (const userId of notifiedUsers) {
-            await axios.post(`https://api.telegram.org/bot${process.env.BOT_TOKEN}/sendMessage`, {
-              chat_id: userId,
-              text: `Статус вашего заказа ${order_code} изменён! Новый статус: ${status}`
-            });
-          }
-        }
-      } catch (e) {
-        console.error('Ошибка при отправке уведомлений:', e);
-      }
-      // === Конец уведомления ===
+      // Notifications via tracked orders removed (order_code tracking disabled)
 
       console.log('Статус обновлён:', result.rows[0]);
       res.json({ message: 'Статус заказа обновлён', order: result.rows[0] });
@@ -246,62 +190,7 @@ module.exports = (pool) => {
     }
   });
 
-  // Добавить заказ в отслеживаемые
-  router.post('/track', async (req, res) => {
-    const { user_id, order_code } = req.body;
-    if (!user_id || !order_code) {
-      return res.status(400).json({ message: 'user_id и order_code обязательны' });
-    }
-    try {
-      // Проверяем существование заказа
-      const orderResult = await pool.query(
-        'SELECT id FROM orders WHERE order_code = $1',
-        [order_code]
-      );
-      
-      if (orderResult.rows.length === 0) {
-        return res.status(404).json({ message: 'Заказ с таким кодом не найден' });
-      }
-
-      // Добавляем в отслеживаемые
-      await pool.query(
-        'INSERT INTO tracked_orders (user_id, order_code) VALUES ($1, $2) ON CONFLICT DO NOTHING',
-        [user_id, order_code]
-      );
-      res.json({ message: 'Заказ добавлен в отслеживаемые' });
-    } catch (err) {
-      console.error('Ошибка при добавлении заказа:', err);
-      res.status(500).json({ message: 'Ошибка при добавлении заказа', error: err.message });
-    }
-  });
-
-  // Получить все отслеживаемые заказы пользователя
-  router.get('/track/:user_id', async (req, res) => {
-    const { user_id } = req.params;
-    try {
-      const result = await pool.query(
-        `SELECT t.order_code, o.status
-         FROM tracked_orders t
-         JOIN orders o ON t.order_code = o.order_code
-         WHERE t.user_id = $1
-         ORDER BY o.created_at DESC`,
-        [user_id]
-      );
-      
-      if (result.rows.length === 0) {
-        return res.json({ codes: [] });
-      }
-
-      const codes = result.rows.map(row => ({
-        code: row.order_code,
-        status: row.status
-      }));
-      res.json({ codes });
-    } catch (err) {
-      console.error('Ошибка при получении заказов:', err);
-      res.status(500).json({ message: 'Ошибка при получении заказов', error: err.message });
-    }
-  });
+  // Tracking endpoints removed — order_code issuance disabled
 
   return router;
 };

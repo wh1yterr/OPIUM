@@ -16,7 +16,7 @@ const Admin = () => {
     image: '',
     price: ''
   });
-  const [tempQuantities, setTempQuantities] = useState({}); // Временное состояние для хранения значений
+  
   const [editingProduct, setEditingProduct] = useState(null); // Состояние для редактируемого продукта
   const [sizes, setSizes] = useState([]);
   const [selectedProductForSizes, setSelectedProductForSizes] = useState(null);
@@ -125,23 +125,6 @@ const Admin = () => {
 
   const deleteProduct = async (productId) => {
     try {
-      const response = await api.delete(`/products/${productId}`);
-
-      setProducts(products.filter(product => product.id !== parseInt(productId)));
-      toast.success(response.data.message || 'Продукт помечен как удалённый');
-    } catch (err) {
-      toast.error(err.response?.data?.message || 'Ошибка удаления продукта');
-      console.error('Ошибка:', err.response || err);
-    }
-  };
-
-  const updateProductInfo = async (productId, name, price) => {
-    try {
-      const parsedPrice = parseFloat(price) || 0;
-      if (parsedPrice < 0) {
-        toast.error('Цена не может быть отрицательной');
-        return;
-      }
       await api.put(`/products/${productId}`, { name, price: parsedPrice });
       setProducts(products.map(product =>
         product.id === parseInt(productId) ? { ...product, name, price: parsedPrice } : product
@@ -346,76 +329,7 @@ return (
             </>
           )}
         </Tab>
-        <Tab eventKey="products" title="Управление остатками">
-          {products.length === 0 ? (
-            <p>Нет продуктов для отображения</p>
-          ) : (
-            <Table
-              striped
-              bordered
-              hover
-              className="admin-table"
-            >
-              <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>Название</th>
-                  <th>Цена</th>
-                  <th>Остаток</th>
-                  <th>Действия</th>
-                </tr>
-              </thead>
-              <tbody>
-                {products.map((product) => (
-                  <tr key={product.id}>
-                    <td>{product.id}</td>
-                    <td>
-                      {editingProduct === product.id ? (
-                        <Form.Control
-                          type="text"
-                          defaultValue={product.name}
-                          onBlur={(e) => updateProductInfo(product.id, e.target.value, product.price)}
-                          className="admin-input"
-                        />
-                      ) : (
-                        <span onClick={() => setEditingProduct(product.id)} style={{ cursor: 'pointer' }}>
-                          {product.name}
-                        </span>
-                      )}
-                    </td>
-                    <td>
-                      {editingProduct === product.id ? (
-                        <Form.Control
-                          type="number"
-                          min="0"
-                          step="0.01"
-                          defaultValue={product.price}
-                          onBlur={(e) => updateProductInfo(product.id, product.name, e.target.value)}
-                          className="admin-input"
-                        />
-                      ) : (
-                        <span onClick={() => setEditingProduct(product.id)} style={{ cursor: 'pointer' }}>
-                          {product.price} ₽
-                        </span>
-                      )}
-                    </td>
-                    <td>{tempQuantities[product.id] ?? product.quantity}</td>
-                    <td>
-                      <Form.Control
-                        type="number"
-                        min="0"
-                        value={tempQuantities[product.id] ?? product.quantity}
-                        onChange={(e) => setTempQuantities({ ...tempQuantities, [product.id]: e.target.value })}
-                        onBlur={(e) => updateProductQuantity(product.id, e.target.value)}
-                        className="admin-input"
-                      />
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </Table>
-          )}
-        </Tab>
+        {/* Removed 'Управление остатками' tab — sizes tab manages stock by size now */}
         <Tab eventKey="deleteProducts" title="Удаление продуктов">
           {products.length === 0 ? (
             <p>Нет продуктов для удаления</p>
