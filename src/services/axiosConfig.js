@@ -1,8 +1,9 @@
 import axios from 'axios';
 import { authService } from './authService';
+import { API_BASE_URL } from '../config';
 
 const api = axios.create({
-  baseURL: 'https://beerbot-cfhp.onrender.com/api'
+  baseURL: API_BASE_URL
 });
 
 api.interceptors.response.use(

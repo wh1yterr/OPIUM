@@ -3,6 +3,7 @@ import { Container, Tabs, Tab, Table, Form, Pagination, Button, Row, Col } from 
 import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
 import { toast } from 'react-hot-toast';
+import { API_BASE_URL } from '../config';
 import './Admin.css'
 
 const Admin = () => {
@@ -32,12 +33,12 @@ const Admin = () => {
           return;
         }
 
-        const ordersResponse = await axios.get('https://beerbot-cfhp.onrender.com/api/orders/all', {
+        const ordersResponse = await axios.get(`${API_BASE_URL}/orders/all`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setOrders(ordersResponse.data);
 
-        const productsResponse = await axios.get('https://beerbot-cfhp.onrender.com/api/products', {
+        const productsResponse = await axios.get(`${API_BASE_URL}/products`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setProducts(productsResponse.data);
@@ -53,7 +54,7 @@ const Admin = () => {
     try {
       const token = localStorage.getItem('token');
       await axios.put(
-        `https://beerbot-cfhp.onrender.com/api/orders/${orderId}/status`,
+        `${API_BASE_URL}/orders/${orderId}/status`,
         { status },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -77,7 +78,7 @@ const Admin = () => {
       }
 
       await axios.put(
-        `https://beerbot-cfhp.onrender.com/api/products/${productId}/quantity`,
+        `${API_BASE_URL}/products/${productId}/quantity`,
         { quantity: parsedQuantity },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -101,7 +102,7 @@ const Admin = () => {
       };
 
       const response = await axios.post(
-        'https://beerbot-cfhp.onrender.com/api/products',
+        `${API_BASE_URL}/products`,
         productData,
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -119,7 +120,7 @@ const Admin = () => {
     try {
       const token = localStorage.getItem('token');
       const response = await axios.delete(
-        `https://beerbot-cfhp.onrender.com/api/products/${productId}`,
+        `${API_BASE_URL}/products/${productId}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
@@ -141,7 +142,7 @@ const Admin = () => {
       }
 
       await axios.put(
-        `https://beerbot-cfhp.onrender.com/api/products/${productId}`,
+        `${API_BASE_URL}/products/${productId}`,
         { name, price: parsedPrice },
         { headers: { Authorization: `Bearer ${token}` } }
       );

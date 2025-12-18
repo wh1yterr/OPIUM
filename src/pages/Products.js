@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Container, Row, Col, Card, Button, Form } from "react-bootstrap";
 import axios from "axios";
 import { toast } from "react-hot-toast";
+import { API_BASE_URL } from "../config";
 import "./Products.css"; // Подключение CSS
 
 const Products = () => {
@@ -18,7 +19,7 @@ const Products = () => {
         }
 
         const response = await axios.get(
-          "https://beerbot-cfhp.onrender.com/api/products",
+          `${API_BASE_URL}/products`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -52,7 +53,7 @@ const Products = () => {
 
       const quantity = quantities[productId] || 1;
       const response = await axios.post(
-        "https://beerbot-cfhp.onrender.com/api/cart",
+        `${API_BASE_URL}/cart`,
         { productId, quantity },
         { headers: { Authorization: `Bearer ${token}` } }
       );

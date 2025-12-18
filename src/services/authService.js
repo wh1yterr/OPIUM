@@ -1,7 +1,5 @@
 import api from './axiosConfig';
 
-const API_URL = 'https://beerbot-cfhp.onrender.com/api';
-
 export const authService = {
   // Проверка инициализации Telegram WebApp
   isTelegramWebAppInitialized: () => {

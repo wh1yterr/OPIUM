@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Container, Form, Button, Table, Card, Row, Col, Pagination } from "react-bootstrap";
 import axios from "axios";
 import { toast } from "react-hot-toast";
+import { API_BASE_URL } from "../config";
 import "./Profile.css"; // Подключение CSS
 
 const Profile = () => {
@@ -20,7 +21,7 @@ const Profile = () => {
         if (!token) throw new Error("Требуется авторизация");
 
         const userResponse = await axios.get(
-          "https://beerbot-cfhp.onrender.com/api/auth/profile",
+          `${API_BASE_URL}/auth/profile`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -29,7 +30,7 @@ const Profile = () => {
         setAddress(userResponse.data.user.address || "");
 
         const ordersResponse = await axios.get(
-          "https://beerbot-cfhp.onrender.com/api/orders",
+          `${API_BASE_URL}/orders`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -50,7 +51,7 @@ const Profile = () => {
       if (!token) throw new Error("Требуется авторизация");
 
       await axios.put(
-        "https://beerbot-cfhp.onrender.com/api/auth/profile/address",
+        `${API_BASE_URL}/auth/profile/address`,
         { address },
         {
           headers: { Authorization: `Bearer ${token}` },
