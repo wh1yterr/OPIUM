@@ -125,14 +125,12 @@ const Admin = () => {
 
   const deleteProduct = async (productId) => {
     try {
-      await api.put(`/products/${productId}`, { name, price: parsedPrice });
-      setProducts(products.map(product =>
-        product.id === parseInt(productId) ? { ...product, name, price: parsedPrice } : product
-      ));
-      setEditingProduct(null);
-      toast.success('Информация о продукте обновлена');
+      const response = await api.delete(`/products/${productId}`);
+
+      setProducts(products.filter(product => product.id !== parseInt(productId)));
+      toast.success(response.data.message || 'Продукт помечен как удалённый');
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Ошибка обновления информации о продукте');
+      toast.error(err.response?.data?.message || 'Ошибка удаления продукта');
       console.error('Ошибка:', err.response || err);
     }
   };
@@ -176,15 +174,13 @@ return (
               <Table striped bordered hover className="admin-table">
                 <thead>
                   <tr>
-                    <th>ID</th>
-                    <th>Размер</th>
-                    <th>Остаток</th>
-                    <th>Действия</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {sizes.map(size => (
-                    <tr key={size.id}>
+                    const response = await api.delete(`/products/${productId}`);
+
+                    setProducts(products.filter(product => product.id !== parseInt(productId)));
+                    toast.success(response.data.message || 'Продукт помечен как удалённый');
+                  } catch (err) {
+                    toast.error(err.response?.data?.message || 'Ошибка удаления продукта');
+                    console.error('Ошибка:', err.response || err);
                       <td>{size.id}</td>
                       <td>{size.size_name}</td>
                       <td>{size.quantity}</td>
