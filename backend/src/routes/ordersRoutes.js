@@ -57,7 +57,7 @@ module.exports = (pool) => {
         return total + price * item.quantity;
       }, 0);
 
-      // Создание заказа (без генерации order_code)
+      // Создание заказа
       const orderResult = await pool.query(
         'INSERT INTO orders (user_id, total_price, status) VALUES ($1, $2, $3) RETURNING *',
         [token.id, totalPrice, 'pending']
@@ -86,8 +86,7 @@ module.exports = (pool) => {
       console.log('Заказ оформлен:', orderResult.rows[0]);
       res.status(201).json({ 
         message: 'Заказ успешно оформлен', 
-        order: orderResult.rows[0], 
-        order_code: orderCode 
+        order: orderResult.rows[0]
       });
     } catch (err) {
       console.error('Ошибка запроса:', err.stack);
@@ -95,7 +94,7 @@ module.exports = (pool) => {
     }
   });
 
-  // NOTE: order_code lookup removed — orders no longer issue codes on creation
+  // NOTE: orders no longer include tracking codes on creation
 
   // Получение заказов пользователя
   router.get('/', authenticateToken, async (req, res) => {
@@ -103,7 +102,7 @@ module.exports = (pool) => {
       console.log('Запрос заказов для user_id:', req.user.id);
       const token = req.user;
       const result = await pool.query(
-        `SELECT o.id, o.total_price, o.created_at, o.status, o.order_code,
+        `SELECT o.id, o.total_price, o.created_at, o.status,
                 json_agg(
                   json_build_object(
                     'product_id', oi.product_id,
@@ -117,7 +116,7 @@ module.exports = (pool) => {
          LEFT JOIN order_items oi ON o.id = oi.order_id
          LEFT JOIN products p ON oi.product_id = p.id
          WHERE o.user_id = $1
-         GROUP BY o.id, o.total_price, o.created_at, o.status, o.order_code
+         GROUP BY o.id, o.total_price, o.created_at, o.status
          ORDER BY o.created_at DESC`,
         [token.id]
       );
@@ -134,7 +133,7 @@ module.exports = (pool) => {
     try {
       console.log('Запрос всех заказов для админа:', req.user.id);
       const result = await pool.query(
-        `SELECT o.id, o.user_id, o.total_price, o.created_at, o.status, o.order_code,
+        `SELECT o.id, o.user_id, o.total_price, o.created_at, o.status,
                 u.email as user_email,
                 json_agg(
                   json_build_object(
@@ -149,7 +148,7 @@ module.exports = (pool) => {
          LEFT JOIN order_items oi ON o.id = oi.order_id
          LEFT JOIN products p ON oi.product_id = p.id
          LEFT JOIN users u ON o.user_id = u.id
-         GROUP BY o.id, o.user_id, o.total_price, o.created_at, o.status, o.order_code, u.email
+        GROUP BY o.id, o.user_id, o.total_price, o.created_at, o.status, u.email
          ORDER BY o.created_at DESC`
       );
       console.log('Результат всех заказов:', result.rows);
@@ -180,7 +179,7 @@ module.exports = (pool) => {
         return res.status(404).json({ message: 'Заказ не найден' });
       }
 
-      // Notifications via tracked orders removed (order_code tracking disabled)
+      // Notifications via tracked orders removed
 
       console.log('Статус обновлён:', result.rows[0]);
       res.json({ message: 'Статус заказа обновлён', order: result.rows[0] });
@@ -190,7 +189,7 @@ module.exports = (pool) => {
     }
   });
 
-  // Tracking endpoints removed — order_code issuance disabled
+  // Tracking endpoints removed — issuance of tracking codes disabled
 
   return router;
 };

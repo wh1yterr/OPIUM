@@ -77,6 +77,15 @@
   font-weight: 700;
 }
 
+/* Make delivery address full-width by default */
+.delivery-address {
+  width: 100% !important;
+  padding: 10px !important;
+  text-align: left !important;
+  font-weight: 500 !important;
+  font-size: 1rem !important;
+}
+
 .cart-container .form-control:focus {
   border-color: #dc143c !important;
   box-shadow: 0 0 0 0.2rem rgba(220, 20, 60, 0.25) !important;
@@ -167,6 +176,15 @@
   .cart-container .form-control {
     width: 60px;
     padding: 6px;
+  }
+
+  /* Make delivery address input full-width and more readable */
+  .delivery-address {
+    width: 100% !important;
+    padding: 12px !important;
+    text-align: left !important;
+    font-weight: 500 !important;
+    font-size: 1rem !important;
   }
 
   .cart-container h3 {

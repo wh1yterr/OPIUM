@@ -76,6 +76,15 @@
   color: #ffffff !important;
 }
 
+/* Cards list for mobile: hide table and show cards on small screens */
+.profile-orders-cards { display: none; }
+.profile-order-card { background: #0a0a0a; border: 1px solid #1a1a1a; }
+
+@media (max-width: 768px) {
+  .profile-container .table { display: none !important; }
+  .profile-orders-cards { display: block; }
+}
+
 .profile-container .table thead th {
   background-color: #1a1a1a !important;
   border-bottom: 2px solid #333333 !important;

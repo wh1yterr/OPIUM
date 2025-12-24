@@ -90,33 +90,16 @@ const Profile = () => {
                 className="profile-orders-table"
               >
                 <thead>
-                  <tr>
-                    <th>Код</th>
-                    <th>Дата</th>
-                    <th>Общая сумма</th>
-                    <th>Статус</th>
-                    <th>Товары</th>
-                  </tr>
+                      <tr>
+                        <th>Дата</th>
+                        <th>Общая сумма</th>
+                        <th>Статус</th>
+                        <th>Товары</th>
+                      </tr>
                 </thead>
                 <tbody>
                   {paginatedOrders.map((order) => (
                     <tr key={order.id}>
-                      <td style={{minWidth: 90}}>
-                        <div style={{display:'flex',alignItems:'center',gap:4}}>
-                          <span style={{fontFamily:'monospace',fontSize:'0.95em'}}>{order.order_code}</span>
-                          <Button
-                            variant="outline-secondary"
-                            size="sm"
-                            style={{padding:'2px 7px',fontSize:'0.85em'}}
-                            onClick={() => {
-                              navigator.clipboard.writeText(order.order_code);
-                              toast.success('Код скопирован!');
-                            }}
-                          >
-                            📋
-                          </Button>
-                        </div>
-                      </td>
                       <td>{new Date(order.created_at).toLocaleDateString()}</td>
                       <td>{order.total_price} ₽</td>
                       <td>{order.status}</td>
@@ -133,6 +116,22 @@ const Profile = () => {
                   ))}
                 </tbody>
               </Table>
+              {/* Mobile-friendly cards (shown via CSS on small screens) */}
+              <div className="profile-orders-cards">
+                {paginatedOrders.map((order) => (
+                  <Card key={order.id} className="mb-3 profile-order-card">
+                    <Card.Body>
+                      <Card.Title>Заказ #{order.id} — {new Date(order.created_at).toLocaleDateString()}</Card.Title>
+                      <Card.Subtitle className="mb-2 text-muted">Сумма: {order.total_price} ₽ — Статус: {order.status}</Card.Subtitle>
+                      <ul className="mb-0 mt-2">
+                        {order.items.map((item) => (
+                          <li key={item.product_id}>{item.name} — {item.quantity} шт. по {item.price_at_order} ₽</li>
+                        ))}
+                      </ul>
+                    </Card.Body>
+                  </Card>
+                ))}
+              </div>
               <Pagination className="justify-content-center mt-2">
                 <Pagination.Prev onClick={() => setCurrentPage((p) => Math.max(1, p - 1))} disabled={currentPage === 1} />
                 {Array.from({ length: totalPages }, (_, i) => (

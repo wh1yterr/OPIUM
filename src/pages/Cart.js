@@ -109,9 +109,8 @@ const Cart = () => {
       toast.success("Заказ успешно оформлен!");
       console.log("Ответ сервера:", response.data);
 
-      // Показываем код заказа пользователю
-      const { order_code } = response.data;
-      alert(`Ваш заказ успешно создан! Код заказа: ${order_code}. Используйте его в боте с командой /addorder <код>.`);
+      // Показываем простое уведомление
+      alert(response.data.message || 'Ваш заказ создан.');
     } catch (err) {
       toast.error(
         err.response?.data?.message || "Ошибка при оформлении заказа"
@@ -152,6 +151,7 @@ const Cart = () => {
                 placeholder="Введите адрес доставки для этого заказа"
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
+                className="delivery-address"
               />
             </Form.Group>
           </Form>
