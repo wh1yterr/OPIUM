@@ -161,7 +161,7 @@ module.exports = (pool) => {
   router.get('/profile', async (req, res) => {
     try {
       const result = await pool.query(
-        'SELECT email, contact_face, phone, address FROM users WHERE id = $1',
+        'SELECT email, contact_face, phone FROM users WHERE id = $1',
         [req.user.id]
       );
       if (result.rows.length === 0) {
@@ -175,29 +175,10 @@ module.exports = (pool) => {
   });
 
   router.put('/profile/address', async (req, res) => {
-    try {
-      const { address } = req.body;
-      if (!address) {
-        return res.status(400).json({ message: 'Address is required' });
-      }
-
-      const result = await pool.query(
-        'UPDATE users SET address = $1 WHERE id = $2 RETURNING *',
-        [address, req.user.id]
-      );
-
-      if (result.rows.length === 0) {
-        return res.status(404).json({ message: 'User not found' });
-      }
-
-      res.json({ 
-        message: 'Address updated successfully',
-        user: { ...result.rows[0], password: undefined }
-      });
-    } catch (err) {
-      console.error('Error updating address:', err.stack);
-      res.status(500).json({ message: 'Ошибка при обновлении адреса', error: err.message });
-    }
+    // The users table in this schema does not contain a persistent `address` column.
+    // Delivery addresses are stored per-order as `delivery_address` in the `orders` table.
+    // Return a clear message so clients don't attempt to update a non-existent column.
+    res.status(400).json({ message: 'Profile address is not stored on user. Use order delivery address when creating an order.' });
   });
 
   // Проверка статуса админа
