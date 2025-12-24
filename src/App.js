@@ -138,16 +138,7 @@ function App() {
                 )
               }
             />
-            <Route
-              path="/products"
-              element={
-                isAuthenticated ? (
-                  <Products />
-                ) : (
-                  <Navigate to="/login" replace />
-                )
-              }
-            />
+            <Route path="/products" element={<Products />} />
             <Route
               path="/cart"
               element={

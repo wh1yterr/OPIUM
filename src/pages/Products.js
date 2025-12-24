@@ -13,26 +13,14 @@ const Products = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const token = localStorage.getItem("token");
-        if (!token) {
-          throw new Error("Требуется авторизация");
-        }
-
-        const response = await axios.get(
-          `https://opium-2-igrl.onrender.com/api/products`,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
+        // Fetch products anonymously (server allows public GET)
+        const response = await axios.get(`https://opium-2-igrl.onrender.com/api/products`);
 
         setProducts(response.data);
         
         // Загружаем размеры для каждого продукта
         const sizesPromises = response.data.map(product =>
-          axios.get(
-            `https://opium-2-igrl.onrender.com/api/sizes/product/${product.id}`,
-            { headers: { Authorization: `Bearer ${token}` } }
-          )
+          axios.get(`https://opium-2-igrl.onrender.com/api/sizes/product/${product.id}`)
         );
         
         const sizesResponses = await Promise.all(sizesPromises);
