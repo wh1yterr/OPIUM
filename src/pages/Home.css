@@ -3,14 +3,13 @@
   padding: 60px 20px;
   max-width: 1400px;
   margin: 0 auto;
-  background-color: #000000;
+  background-color: transparent;
   min-height: 100vh;
 }
 
 /* make container a stacking context so video sits behind content */
 .home-container {
   position: relative;
-  z-index: 1;
   overflow: hidden;
 }
 
