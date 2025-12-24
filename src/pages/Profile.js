@@ -8,6 +8,7 @@ const Profile = () => {
   const [user, setUser] = useState(null);
   const [orders, setOrders] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
+  const [expandedOrders, setExpandedOrders] = useState([]);
   const itemsPerPage = 5;
   const totalPages = Math.ceil(orders.length / itemsPerPage);
   const paginatedOrders = orders.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
@@ -121,13 +122,34 @@ const Profile = () => {
                 {paginatedOrders.map((order) => (
                   <Card key={order.id} className="mb-3 profile-order-card">
                     <Card.Body>
-                      <Card.Title>Заказ #{order.id} — {new Date(order.created_at).toLocaleDateString()}</Card.Title>
-                      <Card.Subtitle className="mb-2 text-muted">Сумма: {order.total_price} ₽ — Статус: {order.status}</Card.Subtitle>
-                      <ul className="mb-0 mt-2">
-                        {order.items.map((item) => (
-                          <li key={item.product_id}>{item.name} — {item.quantity} шт. по {item.price_at_order} ₽</li>
-                        ))}
-                      </ul>
+                      <div className="d-flex justify-content-between align-items-start">
+                        <div>
+                          <Card.Title className="mb-1">Заказ #{order.id} — {new Date(order.created_at).toLocaleDateString()}</Card.Title>
+                          <Card.Subtitle className="mb-2 text-muted">Сумма: {order.total_price} ₽</Card.Subtitle>
+                          {order.delivery_address && (
+                            <div className="order-address">Адрес: {order.delivery_address}</div>
+                          )}
+                        </div>
+                        <div className="text-end">
+                          <span className={`order-status badge status-${order.status}`}>{order.status}</span>
+                        </div>
+                      </div>
+                      <div className="order-items mt-2">
+                        {expandedOrders.includes(order.id) ? (
+                          <ul className="mb-0">
+                            {order.items.map((item) => (
+                              <li key={item.product_id}>{item.name} — {item.quantity} шт. по {item.price_at_order} ₽</li>
+                            ))}
+                          </ul>
+                        ) : (
+                          <div className="text-muted small">{order.items.length} товаров — нажмите, чтобы развернуть</div>
+                        )}
+                      </div>
+                      <div className="mt-2 text-end">
+                        <Button variant="outline-secondary" size="sm" onClick={() => {
+                          setExpandedOrders(prev => prev.includes(order.id) ? prev.filter(id => id !== order.id) : [...prev, order.id]);
+                        }}>{expandedOrders.includes(order.id) ? 'Свернуть' : 'Показать товары'}</Button>
+                      </div>
                     </Card.Body>
                   </Card>
                 ))}

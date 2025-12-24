@@ -158,3 +158,12 @@
     padding: 10px;
   }
 }
+
+/* Additional styles for order cards and badges */
+.profile-order-card .order-address { color: #cccccc; font-size: 0.95rem; margin-top: 6px; }
+.order-status.badge { padding: 8px 10px; border-radius: 4px; text-transform: uppercase; font-weight: 700; }
+.status-pending { background: #f0ad4e; color: #111; }
+.status-shipped { background: #17a2b8; color: #fff; }
+.status-delivered { background: #28a745; color: #fff; }
+.status-canceled { background: #dc143c; color: #fff; }
+
