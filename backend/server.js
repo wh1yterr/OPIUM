@@ -76,10 +76,11 @@ const sizesRoutes = require('./src/routes/sizesRoutes');
 app.use('/api/auth', authRoutes(pool));
 app.use('/api/orders', ordersRoutes(pool));
 
-// Защищенные маршруты с аутентификацией
-app.use('/api/products', authenticateToken, productsRoutes(pool));
+// Маршруты
+// Products and sizes are public for browsing; cart remains protected.
+app.use('/api/products', productsRoutes(pool));
 app.use('/api/cart', authenticateToken, cartRoutes(pool));
-app.use('/api/sizes', authenticateToken, sizesRoutes(pool));
+app.use('/api/sizes', sizesRoutes(pool));
 
 // Обработка ошибок
 app.use((err, req, res, next) => {
