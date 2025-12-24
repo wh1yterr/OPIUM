@@ -29,7 +29,7 @@ module.exports = (pool) => {
     try {
       console.log('Запрос на оформление заказа:', req.body);
       const token = req.user;
-      const { items } = req.body;
+      const { items, address } = req.body;
 
       if (!items || items.length === 0) {
         return res.status(400).json({ message: 'Корзина пуста' });
@@ -49,6 +49,18 @@ module.exports = (pool) => {
               message: `Недостаточно товара "${item.name || 'неизвестный товар'}" размера ${item.size_name || ''} в наличии. Остаток: ${availableQuantity}` 
             });
           }
+        } else {
+          // Проверка общего остатка по продукту
+          const prodResult = await pool.query(
+            'SELECT quantity FROM products WHERE id = $1',
+            [item.product_id]
+          );
+          const available = prodResult.rows[0]?.quantity || 0;
+          if (available < item.quantity) {
+            return res.status(400).json({
+              message: `Недостаточно товара "${item.name || 'неизвестный товар'}" в наличии. Остаток: ${available}`
+            });
+          }
         }
       }
 
@@ -57,37 +69,52 @@ module.exports = (pool) => {
         return total + price * item.quantity;
       }, 0);
 
-      // Создание заказа
-      const orderResult = await pool.query(
-        'INSERT INTO orders (user_id, total_price, status) VALUES ($1, $2, $3) RETURNING *',
-        [token.id, totalPrice, 'pending']
-      );
-      const orderId = orderResult.rows[0].id;
-
-      // Добавление элементов заказа и вычитание остатков
-      for (const item of items) {
-        const price = typeof item.price === 'string' ? parseFloat(item.price.split('₽')[0]) : parseFloat(item.price);
-        await pool.query(
-          'INSERT INTO order_items (order_id, product_id, quantity, price_at_order, size_name) VALUES ($1, $2, $3, $4, $5)',
-          [orderId, item.product_id, item.quantity, price, item.size_name || null]
+      // Begin transaction to ensure atomicity
+      await pool.query('BEGIN');
+      try {
+        // Insert order including delivery address
+        const orderResult = await pool.query(
+          'INSERT INTO orders (user_id, total_price, status, delivery_address) VALUES ($1, $2, $3, $4) RETURNING *',
+          [token.id, totalPrice, 'pending', address || null]
         );
-        // Вычитание остатка из таблицы размеров
-        if (item.size_id) {
+        const orderId = orderResult.rows[0].id;
+
+        // Add order items and decrement stocks
+        for (const item of items) {
+          const price = typeof item.price === 'string' ? parseFloat(item.price.split('₽')[0]) : parseFloat(item.price);
           await pool.query(
-            'UPDATE sizes SET quantity = quantity - $1 WHERE id = $2',
-            [item.quantity, item.size_id]
+            'INSERT INTO order_items (order_id, product_id, quantity, price_at_order, size_name, size_id) VALUES ($1, $2, $3, $4, $5, $6)',
+            [orderId, item.product_id, item.quantity, price, item.size_name || null, item.size_id || null]
           );
+
+          // Decrement stock by size if provided, otherwise by product
+          if (item.size_id) {
+            await pool.query(
+              'UPDATE sizes SET quantity = quantity - $1 WHERE id = $2',
+              [item.quantity, item.size_id]
+            );
+          } else {
+            await pool.query(
+              'UPDATE products SET quantity = quantity - $1 WHERE id = $2',
+              [item.quantity, item.product_id]
+            );
+          }
         }
+
+        // Clear cart
+        await pool.query('DELETE FROM cart WHERE user_id = $1', [token.id]);
+
+        await pool.query('COMMIT');
+        console.log('Заказ оформлен:', orderResult.rows[0]);
+        res.status(201).json({ 
+          message: 'Заказ успешно оформлен', 
+          order: orderResult.rows[0]
+        });
+      } catch (txErr) {
+        await pool.query('ROLLBACK');
+        console.error('Ошибка в транзакции оформления заказа:', txErr);
+        return res.status(500).json({ message: 'Ошибка оформления заказа', error: txErr.message });
       }
-
-      // Очистка корзины
-      await pool.query('DELETE FROM cart WHERE user_id = $1', [token.id]);
-
-      console.log('Заказ оформлен:', orderResult.rows[0]);
-      res.status(201).json({ 
-        message: 'Заказ успешно оформлен', 
-        order: orderResult.rows[0]
-      });
     } catch (err) {
       console.error('Ошибка запроса:', err.stack);
       res.status(500).json({ message: err.message });
