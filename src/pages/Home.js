@@ -5,6 +5,12 @@ import "./Home.css";
 const Home = () => {
   return (
     <Container className="home-container">
+      <div className="home-video-wrap">
+        <video autoPlay muted loop playsInline className="home-bg-video" poster="/videos/bg-poster.jpg">
+          <source src="/videos/bg.mp4" type="video/mp4" />
+          Ваш браузер не поддерживает видео на фоне.
+        </video>
+      </div>
       <div className="home-header">
         <h1 className="display-4">OPIUM</h1>
         <p className="lead">Premium Streetwear Collection</p>
