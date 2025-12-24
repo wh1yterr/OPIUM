@@ -16,23 +16,16 @@ const Register = ({ setIsAuthenticated }) => {
   const navigate = useNavigate();
 
   const sendTokenToTelegram = (token) => {
-    if (window.Telegram?.WebApp) {
-      try {
-        const data = {
-          action: "auth",
-          token: token
-        };
+    try {
+      if (window?.Telegram?.WebApp) {
+        const data = { action: "auth", token };
         window.Telegram.WebApp.sendData(JSON.stringify(data));
-        toast.success("Данные успешно отправлены в Telegram");
         return true;
-      } catch (error) {
-        toast.error(`Ошибка отправки данных: ${error.message}`);
-        return false;
       }
-    } else {
-      toast.error("Telegram Web App недоступен");
-      return false;
+    } catch (e) {
+      // ignore Telegram errors silently
     }
+    return false;
   };
 
   const handleChange = (e) => {

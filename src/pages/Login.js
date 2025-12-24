@@ -15,43 +15,21 @@ const Login = ({ setIsAuthenticated }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
-    console.log("=== Начало процесса входа ===");
+    
 
     try {
       const loginData = { email, password };
       console.log("Отправка запроса на вход...");
       
       const response = await api.post("/auth/login", loginData);
-      console.log("Ответ сервера:", response.data);
-      
-      if (!response.data.token) {
-        console.error("Токен отсутствует в ответе");
-        throw new Error("Токен не получен от сервера");
-      }
-
+      if (!response.data.token) throw new Error("Токен не получен от сервера");
       const token = response.data.token;
-      console.log("Токен получен, сохраняем в localStorage");
       localStorage.setItem("token", token);
 
-      // Отправка токена в Telegram
-      console.log("Отправка токена в Telegram...");
-      const telegramResult = await authService.sendTokenToTelegram(token);
-      console.log("Результат отправки в Telegram:", telegramResult);
+      // Try to send token to Telegram silently (no toasts)
+      try { authService.sendTokenToTelegram(token); } catch (e) {}
 
-      if (!telegramResult) {
-        console.warn("Не удалось отправить токен в Telegram");
-        toast("Не удалось отправить данные в Telegram. Пожалуйста, убедитесь, что вы открыли приложение через Telegram.", {
-          icon: '⚠️',
-          style: {
-            borderRadius: '10px',
-            background: '#333',
-            color: '#fff',
-          },
-        });
-      } else {
-        console.log("Токен успешно отправлен в Telegram");
-        toast.success("Вход выполнен успешно");
-      }
+      toast.success("Вход выполнен успешно");
 
       // Обновляем состояние авторизации
       console.log("Обновляем состояние авторизации");
@@ -66,11 +44,6 @@ const Login = ({ setIsAuthenticated }) => {
       navigate("/profile", { replace: true });
     } catch (err) {
       console.error("Ошибка при входе:", err);
-      console.error("Детали ошибки:", {
-        message: err.message,
-        response: err.response?.data,
-        status: err.response?.status
-      });
       
       let errorMessage = "Ошибка сервера. Попробуйте позже.";
       

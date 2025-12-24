@@ -43,39 +43,17 @@ function App() {
 
   // Функция для проверки инициализации Telegram WebApp
   const checkTelegramWebApp = () => {
-    console.log('=== Проверка Telegram WebApp ===');
-    
-    // Проверяем наличие объекта Telegram
-    if (!window.Telegram) {
-      console.error('Объект Telegram не найден');
+    try {
+      if (!window?.Telegram?.WebApp) return false;
+      return Boolean(window.Telegram.WebApp.initData);
+    } catch (e) {
       return false;
     }
-
-    // Проверяем наличие WebApp
-    if (!window.Telegram.WebApp) {
-      console.error('WebApp не найден');
-      return false;
-    }
-
-    const webApp = window.Telegram.WebApp;
-    
-    // Проверяем, что мы в Telegram
-    if (!webApp.initData) {
-      console.error('initData отсутствует');
-      return false;
-    }
-
-    console.log('WebApp успешно инициализирован');
-    console.log('Platform:', webApp.platform);
-    console.log('Version:', webApp.version);
-    
-    return true;
   };
 
   useEffect(() => {
     // Проверяем инициализацию Telegram WebApp
     const isInitialized = checkTelegramWebApp();
-    console.log('WebApp инициализирован:', isInitialized);
 
     const token = localStorage.getItem("token");
     if (token) {
