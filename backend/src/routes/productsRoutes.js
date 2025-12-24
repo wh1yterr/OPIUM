@@ -4,8 +4,8 @@ const jwt = require('jsonwebtoken');
 module.exports = (pool) => {
   const router = express.Router();
 
-  // Middleware для проверки токена
-  router.use((req, res, next) => {
+  // Authentication middleware used only for protected (admin) routes
+  const authenticateToken = (req, res, next) => {
     const token = req.header('Authorization')?.split(' ')[1];
     if (!token) return res.status(401).json({ message: 'Доступ запрещён' });
 
@@ -14,7 +14,7 @@ module.exports = (pool) => {
       req.user = user;
       next();
     });
-  });
+  };
 
   // Middleware для проверки роли админа
   const checkAdmin = (req, res, next) => {
@@ -38,7 +38,7 @@ module.exports = (pool) => {
   });
 
   // Добавить новый продукт
-  router.post('/', checkAdmin, async (req, res) => {
+  router.post('/', authenticateToken, checkAdmin, async (req, res) => {
     const { name, description, image, price, quantity = 0 } = req.body;
     try {
       const result = await pool.query(
@@ -53,7 +53,7 @@ module.exports = (pool) => {
   });
 
   // Обновить количество продукта
-  router.put('/:productId/quantity', checkAdmin, async (req, res) => {
+  router.put('/:productId/quantity', authenticateToken, checkAdmin, async (req, res) => {
     try {
       const { productId } = req.params;
       const { quantity } = req.body;
@@ -79,7 +79,7 @@ module.exports = (pool) => {
   });
 
   // Пометить продукт как удалённый
-  router.delete('/:productId', checkAdmin, async (req, res) => {
+  router.delete('/:productId', authenticateToken, checkAdmin, async (req, res) => {
     try {
       const { productId } = req.params;
 
@@ -100,7 +100,7 @@ module.exports = (pool) => {
   });
 
   // Обновить информацию о продукте
-  router.put('/:productId', checkAdmin, async (req, res) => {
+  router.put('/:productId', authenticateToken, checkAdmin, async (req, res) => {
     try {
       const { productId } = req.params;
       const { name, price } = req.body;
