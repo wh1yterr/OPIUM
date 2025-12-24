@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { Container, Form, Button, Table, Card, Row, Col, Pagination } from "react-bootstrap";
+import { Container, Button, Table, Card, Row, Col, Pagination } from "react-bootstrap";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 import "./Profile.css"; // Подключение CSS
 
 const Profile = () => {
   const [user, setUser] = useState(null);
-  const [address, setAddress] = useState("");
   const [orders, setOrders] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
@@ -26,7 +25,6 @@ const Profile = () => {
           }
         );
         setUser(userResponse.data.user);
-        setAddress(userResponse.data.user.address || "");
 
         const ordersResponse = await axios.get(
           `https://opium-2-igrl.onrender.com/api/orders`,
@@ -43,25 +41,7 @@ const Profile = () => {
     fetchProfileData();
   }, []);
 
-  const handleSaveAddress = async (e) => {
-    e.preventDefault();
-    try {
-      const token = localStorage.getItem("token");
-      if (!token) throw new Error("Требуется авторизация");
-
-      await axios.put(
-        `https://opium-2-igrl.onrender.com/api/auth/profile/address`,
-        { address },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-      toast.success("Адрес успешно сохранён");
-    } catch (err) {
-      toast.error("Ошибка сохранения адреса");
-      console.error("Ошибка:", err.response || err);
-    }
-  };
+  // адрес доставки теперь указывается при оформлении заказа в корзине
 
   return (
     <Container className="profile-container">
@@ -87,35 +67,13 @@ const Profile = () => {
                   <strong>Телефон:</strong> {user.phone || "Не указан"}
                 </p>
               </Col>
-              <Col xs={12}>
-                <p>
-                  <strong>Адрес доставки:</strong> {user.address || "Не указан"}
-                </p>
-              </Col>
+              {/* Адрес доставки убран из профиля — указывается при оформлении в корзине */}
             </Row>
           </Card.Body>
         </Card>
       )}
 
-      <Card className="profile-card">
-        <Card.Header>Адрес доставки</Card.Header>
-        <Card.Body>
-          <Form onSubmit={handleSaveAddress} className="profile-address-form">
-            <Form.Group controlId="formAddress">
-              <Form.Label>Введите новый адрес</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Введите ваш адрес"
-                value={address}
-                onChange={(e) => setAddress(e.target.value)}
-              />
-            </Form.Group>
-            <Button variant="primary" type="submit" className="mt-3">
-              Сохранить адрес
-            </Button>
-          </Form>
-        </Card.Body>
-      </Card>
+      {/* Адрес доставки удалён из профиля */}
 
       <Card className="profile-card">
         <Card.Header>Мои заказы</Card.Header>

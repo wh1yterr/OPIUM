@@ -49,6 +49,13 @@
   border: 1px solid #1a1a1a !important;
 }
 
+/* Force table cells background and text color to avoid white default styles */
+.admin-table th,
+.admin-table td {
+  background-color: #0a0a0a !important;
+  color: #ffffff !important;
+}
+
 .admin-table thead th {
   background-color: #1a1a1a !important;
   border-bottom: 2px solid #333333 !important;

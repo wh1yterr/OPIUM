@@ -6,6 +6,7 @@ import "./Cart.css";
 
 const Cart = () => {
   const [cartItems, setCartItems] = useState([]);
+  const [address, setAddress] = useState('');
   
 
 
@@ -92,10 +93,15 @@ const Cart = () => {
       const token = localStorage.getItem("token");
       if (!token) throw new Error("Требуется авторизация");
 
-      console.log("Отправка заказа:", { items: cartItems });
+      if (!address || address.trim().length < 5) {
+        toast.error('Пожалуйста, укажите адрес доставки');
+        return;
+      }
+
+      console.log("Отправка заказа:", { items: cartItems, address });
       const response = await axios.post(
         `https://opium-2-igrl.onrender.com/api/orders`,
-        { items: cartItems },
+        { items: cartItems, address },
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
@@ -138,6 +144,17 @@ const Cart = () => {
         <p>Корзина пуста</p>
       ) : (
         <>
+          <Form className="mb-3">
+            <Form.Group controlId="deliveryAddress">
+              <Form.Label>Адрес доставки</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Введите адрес доставки для этого заказа"
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
+              />
+            </Form.Group>
+          </Form>
           <Table>
             <thead>
               <tr>
