@@ -17,7 +17,7 @@ const Admin = () => {
     price: ''
   });
   
-  const [editingProduct, setEditingProduct] = useState(null); // Состояние для редактируемого продукта
+  const [editingProduct, setEditingProduct] = useState(null); 
   const [sizes, setSizes] = useState([]);
   const [selectedProductForSizes, setSelectedProductForSizes] = useState(null);
   const [newSize, setNewSize] = useState({ size_name: 'S', quantity: 0 });
@@ -30,11 +30,9 @@ const Admin = () => {
 
         let decodedToken;
         try {
-          // eslint-disable-next-line global-require
           const jwtDecode = require('jwt-decode');
           decodedToken = jwtDecode(token);
         } catch (e) {
-          // fallback: decode JWT payload without verification
           try {
             decodedToken = JSON.parse(atob(token.split('.')[1]));
           } catch (e2) {
@@ -135,7 +133,6 @@ const Admin = () => {
     }
   };
 
-  // Логика пагинации
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentOrders = orders.slice(indexOfFirstItem, indexOfLastItem);
@@ -327,7 +324,7 @@ return (
             </>
           )}
         </Tab>
-        {/* Removed 'Управление остатками' tab — sizes tab manages stock by size now */}
+        {/* Removed  */}
         <Tab eventKey="deleteProducts" title="Удаление продуктов">
           {products.length === 0 ? (
             <p>Нет продуктов для удаления</p>

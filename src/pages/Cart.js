@@ -109,7 +109,7 @@ const Cart = () => {
       toast.success("Заказ успешно оформлен!");
       console.log("Ответ сервера:", response.data);
 
-      // Показываем простое уведомление
+      // простое уведомление
       alert(response.data.message || 'Ваш заказ создан.');
     } catch (err) {
       toast.error(

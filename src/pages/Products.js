@@ -22,11 +22,9 @@ const Products = () => {
         // Загружаем размеры для каждого продукта
         const sizesPromises = response.data.map(async (product) => {
           try {
-            // Use publicApi to avoid sending Authorization header for sizes
             const resp = await publicApi.get(`/sizes/product/${product.id}`);
             return resp.data;
           } catch (err) {
-            // If the server still requires auth, return empty sizes instead of breaking the page
             if (err.response?.status === 401) return [];
             throw err;
           }
@@ -35,8 +33,6 @@ const Products = () => {
         const sizesResponses = await Promise.all(sizesPromises);
         const sizesData = {};
         response.data.forEach((product, index) => {
-          // sizesPromises returns raw data arrays (or empty array) already,
-          // so use the item directly rather than `.data` which doesn't exist here.
           sizesData[product.id] = sizesResponses[index] || [];
         });
         

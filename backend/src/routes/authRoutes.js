@@ -29,7 +29,7 @@ module.exports = (pool) => {
   // Применяем middleware только к защищенным маршрутам
   router.use('/profile', authenticateToken);
   router.use('/profile/address', authenticateToken);
-  // NOTE: не защищаем /refresh-token обычным authenticateToken,
+  // NOTE: не дефает /refresh-token обычным authenticateToken,
   // так как для обновления токена может приходить истёкший access token.
 
   // Генерация токена
@@ -175,9 +175,6 @@ module.exports = (pool) => {
   });
 
   router.put('/profile/address', async (req, res) => {
-    // The users table in this schema does not contain a persistent `address` column.
-    // Delivery addresses are stored per-order as `delivery_address` in the `orders` table.
-    // Return a clear message so clients don't attempt to update a non-existent column.
     res.status(400).json({ message: 'Profile address is not stored on user. Use order delivery address when creating an order.' });
   });
 

