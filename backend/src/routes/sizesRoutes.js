@@ -4,8 +4,8 @@ const jwt = require('jsonwebtoken');
 module.exports = (pool) => {
   const router = express.Router();
 
-  // Middleware для проверки токена
-  router.use((req, res, next) => {
+  // Аутентификация для защищённых маршрутов (POST/PUT/DELETE)
+  const authenticateToken = (req, res, next) => {
     const token = req.header('Authorization')?.split(' ')[1];
     if (!token) return res.status(401).json({ message: 'Доступ запрещён' });
 
@@ -14,7 +14,7 @@ module.exports = (pool) => {
       req.user = user;
       next();
     });
-  });
+  };
 
   // Middleware для проверки роли админа
   const checkAdmin = (req, res, next) => {
@@ -24,7 +24,7 @@ module.exports = (pool) => {
     next();
   };
 
-  // Получить все размеры для продукта
+  // Получить все размеры для продукта (публичный)
   router.get('/product/:productId', async (req, res) => {
     try {
       const { productId } = req.params;
@@ -40,7 +40,7 @@ module.exports = (pool) => {
   });
 
   // Добавить размер к продукту (только админ)
-  router.post('/', checkAdmin, async (req, res) => {
+  router.post('/', authenticateToken, checkAdmin, async (req, res) => {
     try {
       const { product_id, size_name, quantity = 0 } = req.body;
       
@@ -61,7 +61,7 @@ module.exports = (pool) => {
   });
 
   // Обновить количество для размера (только админ)
-  router.put('/:sizeId', checkAdmin, async (req, res) => {
+  router.put('/:sizeId', authenticateToken, checkAdmin, async (req, res) => {
     try {
       const { sizeId } = req.params;
       const { quantity } = req.body;
@@ -87,7 +87,7 @@ module.exports = (pool) => {
   });
 
   // Удалить размер (только админ)
-  router.delete('/:sizeId', checkAdmin, async (req, res) => {
+  router.delete('/:sizeId', authenticateToken, checkAdmin, async (req, res) => {
     try {
       const { sizeId } = req.params;
 
