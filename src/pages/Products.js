@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Container, Row, Col, Card, Button, Form } from "react-bootstrap";
 import api from '../services/axiosConfig';
+import publicApi from '../services/publicApi';
 import { toast } from "react-hot-toast";
 import "./Products.css"; // Подключение CSS
 
@@ -21,12 +22,12 @@ const Products = () => {
         // Загружаем размеры для каждого продукта
         const sizesPromises = response.data.map(async (product) => {
           try {
-            const resp = await api.get(`/sizes/product/${product.id}`);
+            // Use publicApi to avoid sending Authorization header for sizes
+            const resp = await publicApi.get(`/sizes/product/${product.id}`);
             return resp.data;
           } catch (err) {
-            // Если 401 — пользователь не авторизован, просто вернём пустой список размеров
+            // If the server still requires auth, return empty sizes instead of breaking the page
             if (err.response?.status === 401) return [];
-            // Иначе пробросим ошибку дальше
             throw err;
           }
         });
