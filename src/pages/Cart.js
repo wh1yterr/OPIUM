@@ -19,7 +19,7 @@ const Cart = () => {
         const response = await axios.get(
           `https://opium-2-igrl.onrender.com/api/cart`,
           {
-              headers: { Authorization: `Shopper ${token}` },
+              headers: { Authorization: `Bearer ${token}` },
             }
         );
         console.log("Данные корзины:", response.data);
@@ -38,7 +38,7 @@ const Cart = () => {
       await axios.delete(
         `https://opium-2-igrl.onrender.com/api/cart/${itemId}`,
         {
-          headers: { Authorization: `Shopper ${token}` },
+          headers: { Authorization: `Bearer ${token}` },
         }
       );
       setCartItems(cartItems.filter((item) => item.id !== itemId));
@@ -55,7 +55,7 @@ const Cart = () => {
       const response = await axios.put(
         `https://opium-2-igrl.onrender.com/api/cart/${itemId}/quantity`,
         { quantity: newQuantity },
-        { headers: { Authorization: `Shopper ${token}` } }
+        { headers: { Authorization: `Bearer ${token}` } }
       );
 
       setCartItems(
@@ -102,7 +102,7 @@ const Cart = () => {
       const response = await axios.post(
         `https://opium-2-igrl.onrender.com/api/orders`,
         { items: cartItems, address },
-        { headers: { Authorization: `Shopper ${token}` } }
+        { headers: { Authorization: `Bearer ${token}` } }
       );
 
       setCartItems([]);

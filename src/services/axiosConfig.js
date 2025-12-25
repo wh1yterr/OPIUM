@@ -11,7 +11,7 @@ api.interceptors.request.use((config) => {
   const token = localStorage.getItem('token');
   if (token) {
     config.headers = config.headers || {};
-    config.headers['Authorization'] = `Shopper ${token}`;
+    config.headers['Authorization'] = `Bearer ${token}`;
     try {
       // debug: lightweight log (do not print full token)
       console.debug('api: attaching auth header for request to', config.url, 'tokenPresent=true');
@@ -37,7 +37,7 @@ api.interceptors.response.use(
         if (newToken) {
           localStorage.setItem('token', newToken);
           originalRequest.headers = originalRequest.headers || {};
-          originalRequest.headers['Authorization'] = `Shopper ${newToken}`;
+          originalRequest.headers['Authorization'] = `Bearer ${newToken}`;
           console.debug('api: refreshed token and retrying', originalRequest.url);
           return api(originalRequest);
         }
