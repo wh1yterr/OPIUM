@@ -12,6 +12,12 @@ api.interceptors.request.use((config) => {
   if (token) {
     config.headers = config.headers || {};
     config.headers['Authorization'] = `Shopper ${token}`;
+    try {
+      // debug: lightweight log (do not print full token)
+      console.debug('api: attaching auth header for request to', config.url, 'tokenPresent=true');
+    } catch (e) {
+      // ignore
+    }
   }
   return config;
 });
@@ -32,15 +38,21 @@ api.interceptors.response.use(
           localStorage.setItem('token', newToken);
           originalRequest.headers = originalRequest.headers || {};
           originalRequest.headers['Authorization'] = `Shopper ${newToken}`;
+          console.debug('api: refreshed token and retrying', originalRequest.url);
           return api(originalRequest);
         }
       } catch (refreshError) {
+        console.debug('api: refresh token failed for', originalRequest.url, refreshError?.message || refreshError);
         localStorage.removeItem('token');
         localStorage.removeItem('refreshToken');
         window.location.href = '/login';
       }
     }
 
+    // debug single 401
+    if (error.response?.status === 401) {
+      try { console.debug('api: request 401', originalRequest?.url || originalRequest); } catch (e) {}
+    }
     return Promise.reject(error);
   }
 );

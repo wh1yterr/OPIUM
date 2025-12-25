@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Container, Row, Col, Card, Button, Form } from "react-bootstrap";
-import axios from "axios";
+import api from '../services/axiosConfig';
 import { toast } from "react-hot-toast";
 import "./Products.css"; // Подключение CSS
 
@@ -14,14 +14,22 @@ const Products = () => {
     const fetchProducts = async () => {
       try {
         // Fetch products anonymously (server allows public GET)
-        const response = await axios.get(`https://opium-2-igrl.onrender.com/api/products`);
+        const response = await api.get(`/products`);
 
         setProducts(response.data);
         
         // Загружаем размеры для каждого продукта
-        const sizesPromises = response.data.map(product =>
-          axios.get(`https://opium-2-igrl.onrender.com/api/sizes/product/${product.id}`)
-        );
+        const sizesPromises = response.data.map(async (product) => {
+          try {
+            const resp = await api.get(`/sizes/product/${product.id}`);
+            return resp.data;
+          } catch (err) {
+            // Если 401 — пользователь не авторизован, просто вернём пустой список размеров
+            if (err.response?.status === 401) return [];
+            // Иначе пробросим ошибку дальше
+            throw err;
+          }
+        });
         
         const sizesResponses = await Promise.all(sizesPromises);
         const sizesData = {};
@@ -61,11 +69,7 @@ const Products = () => {
         return;
       }
 
-      const response = await axios.post(
-        `https://opium-2-igrl.onrender.com/api/cart`,
-        { productId, sizeId, quantity: 1 },
-        { headers: { Authorization: `Shopper ${token}` } }
-      );
+      const response = await api.post(`/cart`, { productId, sizeId, quantity: 1 });
 
       toast.success(response.data.message);
       setSelectedSizes((prev) => ({ ...prev, [productId]: null }));
