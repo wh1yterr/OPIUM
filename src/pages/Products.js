@@ -64,7 +64,7 @@ const Products = () => {
       const response = await axios.post(
         `https://opium-2-igrl.onrender.com/api/cart`,
         { productId, sizeId, quantity: 1 },
-        { headers: { Authorization: `Bearer ${token}` } }
+        { headers: { Authorization: `Shopper ${token}` } }
       );
 
       toast.success(response.data.message);

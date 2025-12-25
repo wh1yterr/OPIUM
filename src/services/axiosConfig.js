@@ -11,7 +11,7 @@ api.interceptors.request.use((config) => {
   const token = localStorage.getItem('token');
   if (token) {
     config.headers = config.headers || {};
-    config.headers['Authorization'] = `Bearer ${token}`;
+    config.headers['Authorization'] = `Shopper ${token}`;
   }
   return config;
 });
@@ -31,7 +31,7 @@ api.interceptors.response.use(
         if (newToken) {
           localStorage.setItem('token', newToken);
           originalRequest.headers = originalRequest.headers || {};
-          originalRequest.headers['Authorization'] = `Bearer ${newToken}`;
+          originalRequest.headers['Authorization'] = `Shopper ${newToken}`;
           return api(originalRequest);
         }
       } catch (refreshError) {

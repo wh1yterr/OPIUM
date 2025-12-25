@@ -139,3 +139,6 @@ temp/
 
 # User orders JSON (если содержит чувствительные данные)
 backend/user_orders.json
+
+# Ignore generated project map
+PROJECT_FILE_MAP.md

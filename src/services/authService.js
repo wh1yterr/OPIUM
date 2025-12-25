@@ -47,7 +47,7 @@ export const authService = {
 
     try {
       const response = await api.get('/auth/check-admin', {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { Authorization: `Shopper ${token}` }
       });
       return response.data.isAdmin;
     } catch (error) {
@@ -70,7 +70,7 @@ export const authService = {
 
     try {
       const response = await api.post('/auth/refresh-token', {}, {
-        headers: { Authorization: `Bearer ${tokenToUse}` },
+        headers: { Authorization: `Shopper ${tokenToUse}` },
         withCredentials: true
       });
       return response.data.token;

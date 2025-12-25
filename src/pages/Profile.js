@@ -22,15 +22,15 @@ const Profile = () => {
         const userResponse = await axios.get(
           `https://opium-2-igrl.onrender.com/api/auth/profile`,
           {
-            headers: { Authorization: `Bearer ${token}` },
-          }
+              headers: { Authorization: `Shopper ${token}` },
+            }
         );
         setUser(userResponse.data.user);
 
         const ordersResponse = await axios.get(
           `https://opium-2-igrl.onrender.com/api/orders`,
           {
-            headers: { Authorization: `Bearer ${token}` },
+            headers: { Authorization: `Shopper ${token}` },
           }
         );
         setOrders(ordersResponse.data);
