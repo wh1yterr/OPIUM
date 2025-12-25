@@ -35,7 +35,9 @@ const Products = () => {
         const sizesResponses = await Promise.all(sizesPromises);
         const sizesData = {};
         response.data.forEach((product, index) => {
-          sizesData[product.id] = sizesResponses[index].data;
+          // sizesPromises returns raw data arrays (or empty array) already,
+          // so use the item directly rather than `.data` which doesn't exist here.
+          sizesData[product.id] = sizesResponses[index] || [];
         });
         
         setProductSizes(sizesData);
